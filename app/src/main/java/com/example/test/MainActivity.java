@@ -1,91 +1,105 @@
 package com.example.test;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.test.api.ApiService;
-import com.example.test.api.ApiServiceFactory;
+import com.example.test.model.Image;
 import com.example.test.model.Movie;
+import com.example.test.model.TrendingMovie;
+import com.example.test.repo.MovieRepository;
+import com.example.test.viewmodel.MovieViewModel;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import java.util.stream.Collectors;
 
 
 public class MainActivity extends AppCompatActivity {
 
 //    static final String apiKey = "6fec35152112a76320cff5806cd8e72c36f70dfb8ea4e9347d8cc0db4774a50b";
 
-    private TextView text;
+    private Button callButton;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter adapter;
 
-    ApiService apiService = ApiServiceFactory.getService();
+    private MovieViewModel movieViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button callButton = findViewById(R.id.callButton);
-        text = findViewById(R.id.textView);
+        callButton = findViewById(R.id.callButton);
+        recyclerView = findViewById(R.id.recyclerView);
+        adapter = new RecyclerViewAdapter(this);
 
-        callButton.setOnClickListener(view -> getPopular());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    }
-
-    public void getPopular() {
-        Call<List<Movie>> call = apiService.getPopular();
-
-        call.enqueue(new Callback<List<Movie>>() {
+        // Hope this works
+        movieViewModel = new ViewModelProvider.Factory() {
+            @NonNull
             @Override
-            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                if (!response.isSuccessful()) {
-                    text.setText(response.message());
-                    return;
-                }
-
-                assert response.body() != null;
-                StringBuilder movies = new StringBuilder();
-                for (Movie movie : response.body()) {
-                    movies.append(movie).append("\n");
-                }
-                text.setText(movies.toString());
-
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                MovieRepository movieRepository = new MovieRepository();
+                return (T) new MovieViewModel(movieRepository);
             }
+        }.create(MovieViewModel.class);
 
-            @Override
-            public void onFailure(Call<List<Movie>> call, Throwable t) {
-                text.setText(t.getMessage());
-            }
+//        movieViewModel.updateTrendingMovies();
+
+//        List<TrendingMovie> movies = movieViewModel.getTrendingMovies();
+
+        movieViewModel.getTrendingMovies().observe(this, movies -> {
+//            StringBuilder toShow = new StringBuilder();
+//            for (TrendingMovie movie : movies) {
+//                toShow.append(movie).append("\n");
+//            }
+//            text.setText(toShow);
+            fillAdapter(movies);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Update!", Toast.LENGTH_SHORT).show();
         });
 
+        callButton.setOnClickListener(view -> {
+            movieViewModel.updateTrendingMovies();
+//            movieViewModel.clearImages();
+        });
     }
 
-    public void getTrending() {
-        Call<String> call = apiService.getTrending();
 
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (!response.isSuccessful()) {
-                    text.setText(response.message());
-                    return;
-                }
+    // TODO: find a better way to update the view with images
+    private void fillAdapter(List<TrendingMovie> movies) {
 
-                assert response.body() != null;
-                text.setText(response.body());
-            }
+        List<Image> imageList = movieViewModel.getImagesTrending().getValue();
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                text.setText(t.getMessage());
-            }
+        List<String> titles = new ArrayList<>();
+
+        movieViewModel.clearImages();
+
+        movies.forEach(x -> {
+            movieViewModel.searchImage(x.getMovie().getIds().getTmdb(), "movie");
+//            imageURIs.add("https://image.tmdb.org/t/p/w500/aWhitEcqilcGwHoeJk9yLpMx45F.jpg");
+            titles.add(x.getMovie().getTitle());
         });
+
+        assert imageList != null;
+        List<String> imageURIs = new ArrayList<>(imageList.stream().map(x -> "https://image.tmdb.org/t/p/w500" + x.getPath()).collect(Collectors.toList()));
+
+        adapter.setImageURIs(imageURIs);
+        adapter.setTitles(titles);
     }
 }
