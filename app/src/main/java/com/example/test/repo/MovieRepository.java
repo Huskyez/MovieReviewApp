@@ -36,7 +36,6 @@ public class MovieRepository {
 //    private Map<Integer, Pair<TrendingMovie, Image>> map = new HashMap<>();
 
     List<Pair<TrendingMovie, Image>> pairList = new ArrayList<>();
-
     private MutableLiveData<List<Pair<TrendingMovie, Image>>> pairMutableLiveData = new MutableLiveData<>();
 
     public MovieRepository() {
@@ -86,16 +85,14 @@ public class MovieRepository {
                     System.out.println(response.errorBody());
                 }
                 assert response.body() != null;
-//                moviesList
-//                moviesList.addAll(response.body());
-//                movies.setValue(moviesList);
-//                moviesList.forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
                 imagesList.clear();
                 moviesList.clear();
+                pairList.clear();
 
                 moviesList.addAll(response.body());
                 movies.setValue(moviesList);
                 moviesList.forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
+//                response.body().forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
             }
 
             @Override
@@ -133,9 +130,12 @@ public class MovieRepository {
 //                assert imageList != null;
 //                imageList.add(imageSearchResult.getPosters().get(0));
 //                images.setValue(imageList);
-                Image toAdd = imageSearchResult.getPosters().get(0);
-                imagesList.add(toAdd);
-                images.setValue(imagesList);
+
+
+                Optional<Image> optionalImage = imageSearchResult.getPosters().stream().filter(x -> x.getIso_639_1() == null || x.getIso_639_1().equals("en")).findFirst();
+                Image toAdd = optionalImage.orElseGet(() -> imageSearchResult.getPosters().get(0));
+//                imagesList.add(toAdd);
+//                images.setValue(imagesList);
                 Optional<TrendingMovie> movie = moviesList.stream().filter(x -> x.getMovie().getIds().getTmdb().equals(imageSearchResult.getId())).findFirst();
                 movie.ifPresent(trendingMovie -> pairList.add(new Pair<>(trendingMovie, toAdd)));
                 pairMutableLiveData.setValue(pairList);

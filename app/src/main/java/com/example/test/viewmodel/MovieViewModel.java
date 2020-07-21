@@ -17,13 +17,13 @@ import java.util.List;
 public class MovieViewModel extends ViewModel {
 
     private MovieRepository movieRepository;
-    private MutableLiveData<List<TrendingMovie>> trendingMovies;
-    private MutableLiveData<List<Image>> trendingMovieImages;
+//    private MutableLiveData<List<TrendingMovie>> trendingMovies;
+//    private MutableLiveData<List<Image>> trendingMovieImages;
 
 
     public MovieViewModel(MovieRepository movieRepository) {
-        trendingMovies = new MutableLiveData<>();
-        trendingMovieImages = new MutableLiveData<>();
+//        trendingMovies = new MutableLiveData<>();
+//        trendingMovieImages = new MutableLiveData<>();
         this.movieRepository = movieRepository;
     }
 
@@ -33,7 +33,6 @@ public class MovieViewModel extends ViewModel {
 
     public void updateTrendingMovies() {
         movieRepository.searchTrendingMovies();
-//        trendingMovies.setValue(movieRepository.getTrendingMovies());
     }
 
     public void searchImage(Integer tmdb_id, String type) {
@@ -51,10 +50,6 @@ public class MovieViewModel extends ViewModel {
     public LiveData<List<Pair<TrendingMovie, Image>>> getTrendingMoviesData() {
         return movieRepository.getTrendingMoviesData();
     }
-
-//    public void clearImages() {
-//        movieRepository.clearImages();
-//    }
 
     @Override
     protected void onCleared() {

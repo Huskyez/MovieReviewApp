@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Pair;
@@ -30,9 +31,7 @@ import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
-//    static final String apiKey = "6fec35152112a76320cff5806cd8e72c36f70dfb8ea4e9347d8cc0db4774a50b";
 
-    private Button callButton;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
 
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        callButton = findViewById(R.id.callButton);
         recyclerView = findViewById(R.id.recyclerView);
 
         // Hope this works
@@ -60,70 +58,25 @@ public class MainActivity extends AppCompatActivity {
         adapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        movieViewModel.updateTrendingMovies();
 
-//        List<TrendingMovie> movies = movieViewModel.getTrendingMovies();
+        movieViewModel.updateTrendingMovies();
 
-//        movieViewModel.getTrendingMovies().observe(this, movies -> {
-////            StringBuilder toShow = new StringBuilder();
-////            for (TrendingMovie movie : movies) {
-////                toShow.append(movie).append("\n");
-////            }
-////            text.setText(toShow);
-//            fillAdapterTitles(movies);
-//            adapter.notifyDataSetChanged();
-//            Toast.makeText(this, "Update!", Toast.LENGTH_SHORT).show();
-//        });
-//
-//
-//        movieViewModel.getImagesTrending().observe(this, images -> {
-//            fillAdapterImageURIs(images);
-//            adapter.notifyDataSetChanged();
-//        });
+        SwipeRefreshLayout layout = findViewById(R.id.trending_swipe_layout);
+        layout.setOnRefreshListener(() -> {
+            movieViewModel.updateTrendingMovies();
+            layout.setRefreshing(false);
+        });
 
         movieViewModel.getTrendingMoviesData().observe(this, pairs -> {
             fillAdapter(pairs);
             adapter.notifyDataSetChanged();
         });
 
-        callButton.setOnClickListener(view -> {
-            movieViewModel.updateTrendingMovies();
-//            movieViewModel.getTrendingMovies().getValue().forEach(x -> movieViewModel.searchImage(x.getMovie().getIds().getTmdb(), "movie"));
-        });
     }
 
-
-    private void fillAdapterTitles(List<TrendingMovie> movies) {
-        List<String> titles = new ArrayList<>();
-        movies.forEach(x -> titles.add(x.getMovie().getTitle()));
-        adapter.setTitles(titles);
-    }
-
-    private void fillAdapterImageURIs(List<Image> images) {
-        List<String> imageUris = new ArrayList<>();
-        images.forEach(x -> imageUris.add("https://image.tmdb.org/t/p/w500" + x.getPath()));
-        adapter.setImageURIs(imageUris);
-    }
 
     private void fillAdapter(List<Pair<TrendingMovie, Image>> movies) {
 
-//        List<Image> imageList = movieViewModel.getImagesTrending().getValue();
-//
-//        List<String> titles = new ArrayList<>();
-//
-////        movieViewModel.clearImages();
-//
-//        movies.forEach(x -> {
-//            movieViewModel.searchImage(x.getMovie().getIds().getTmdb(), "movie");
-////            imageURIs.add("https://image.tmdb.org/t/p/w500/aWhitEcqilcGwHoeJk9yLpMx45F.jpg");
-//            titles.add(x.getMovie().getTitle());
-//        });
-//
-//        assert imageList != null;
-//        List<String> imageURIs = new ArrayList<>(imageList.stream().map(x -> "https://image.tmdb.org/t/p/w500" + x.getPath()).collect(Collectors.toList()));
-//
-//        adapter.setImageURIs(imageURIs);
-//        adapter.setTitles(titles);
         List<String> titles = new ArrayList<>();
         List<String> imageUris = new ArrayList<>();
         movies.forEach(p -> {
