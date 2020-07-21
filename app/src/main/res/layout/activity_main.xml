@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".views.MainActivity"
     android:layout_gravity="center"
     android:id="@+id/trending_swipe_layout">
 
@@ -17,17 +17,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:id="@+id/recyclerView"
         />
-
-<!--    <Button-->
-<!--        android:id="@+id/callButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Call"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.85"-->
-<!--        />-->
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

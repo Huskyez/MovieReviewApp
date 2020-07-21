@@ -1,32 +1,42 @@
-package com.example.test;
+package com.example.test.viewmodel;
 
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.test.R;
+import com.example.test.model.Image;
+import com.example.test.model.TrendingMovie;
+import com.example.test.repo.ImageRepository;
+import com.example.test.repo.MovieRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+
+
+    //TODO: Depencency ImageRepo
+    private ImageRepository imageRepository;
+    private MovieRepository movieRepository;
 
     private List<String> imageURIs;
     private List<String> titles;
     private Context context;
 
-    public RecyclerViewAdapter(Context context) {
+    public RecyclerViewAdapter(Context context, ImageRepository imageRepository, MovieRepository movieRepository) {
         imageURIs = new ArrayList<>();
         titles = new ArrayList<>();
+        this.imageRepository = imageRepository;
+        this.movieRepository = movieRepository;
         this.context = context;
     }
 
@@ -41,7 +51,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public void setImageURIs(List<String> imageURIs) {
-        this.imageURIs.clear();
         this.imageURIs = imageURIs;
     }
 
@@ -50,7 +59,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public void setTitles(List<String> titles) {
-        this.titles.clear();
         this.titles = titles;
     }
 
@@ -63,13 +71,28 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).asBitmap().load(imageURIs.get(position)).into(holder.imageView);
-        holder.textView.setText(titles.get(position));
+
+        List<TrendingMovie> movies = movieRepository.getTrendingMovies().getValue();
+        Integer tmdb_id = movies.get(position).getMovie().getIds().getTmdb();
+
+        String imageURI;
+        Image image = imageRepository.getImage(tmdb_id);
+
+
+        if (image != null) {
+            imageURI = "https://image.tmdb.org/t/p/w500" + image.getPath();
+        } else {
+            imageRepository.searchImage(tmdb_id, "movie");
+            imageURI = "https://i.pinimg.com/originals/10/b2/f6/10b2f6d95195994fca386842dae53bb2.png";
+        }
+
+        Glide.with(context).asBitmap().load(imageURI).into(holder.imageView);
+        holder.textView.setText(movies.get(position).getMovie().getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return imageURIs.size();
+        return movieRepository.getTrendingMovies().getValue().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

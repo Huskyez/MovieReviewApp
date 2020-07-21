@@ -1,32 +1,25 @@
-package com.example.test;
+package com.example.test.views;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Pair;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.test.model.Image;
-import com.example.test.model.Movie;
-import com.example.test.model.TrendingMovie;
+import com.example.test.R;
+import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
+import com.example.test.viewmodel.RecyclerViewAdapter;
+import com.example.test.model.Image;
+import com.example.test.model.TrendingMovie;
 import com.example.test.viewmodel.MovieViewModel;
+import com.example.test.viewmodel.ViewModelFactory;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieViewModel movieViewModel;
 
+    private MovieRepository movieRepository;
+    private ImageRepository imageRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,35 +41,38 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
 
         // Hope this works
-        movieViewModel = new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                MovieRepository movieRepository = new MovieRepository();
-                return (T) new MovieViewModel(movieRepository);
-            }
-        }.create(MovieViewModel.class);
+        movieViewModel = new ViewModelFactory().create(MovieViewModel.class);
 
+        movieRepository = new MovieRepository();
+        imageRepository = new ImageRepository();
 
-        adapter = new RecyclerViewAdapter(this);
+        adapter = new RecyclerViewAdapter(this, imageRepository, movieRepository);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        movieViewModel.updateTrendingMovies();
+//        movieViewModel.updateTrendingMovies();
+
+        movieRepository.getTrendingMovies().observe(this, trendingMovies -> adapter.notifyDataSetChanged());
+        imageRepository.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
+
+        movieRepository.searchTrendingMovies();
 
         SwipeRefreshLayout layout = findViewById(R.id.trending_swipe_layout);
         layout.setOnRefreshListener(() -> {
-            movieViewModel.updateTrendingMovies();
+            movieRepository.searchTrendingMovies();
             layout.setRefreshing(false);
         });
 
-        movieViewModel.getTrendingMoviesData().observe(this, pairs -> {
-            fillAdapter(pairs);
-            adapter.notifyDataSetChanged();
-        });
+
+
+//        movieViewModel.getTrendingMoviesData().observe(this, pairs -> {
+////            fillAdapter(pairs);
+//            adapter.notifyDataSetChanged();
+//        });
+
+
 
     }
-
 
     private void fillAdapter(List<Pair<TrendingMovie, Image>> movies) {
 

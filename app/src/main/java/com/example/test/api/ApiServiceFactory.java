@@ -18,9 +18,11 @@ public class ApiServiceFactory {
     private static final String API_KEY_HEADER = "trakt-api-key";
     private static final String API_KEY = "ad005b8c117cdeee58a1bdb7089ea31386cd489b21e14b19818c91511f12a086";
 
-    private static final String TMDB_API_KEY_HEADER = "api-key";
+    private static final String TMDB_API_KEY_HEADER = "api_key";
     private static final String TMDB_API_KEY = "366bb8cd1b82ca2f219a0f72303f68e9";
     private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
+
+    private static ApiService instance = null;
 
     private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -28,6 +30,10 @@ public class ApiServiceFactory {
 
 
     public static ApiService getService() {
+
+        if (instance != null) {
+            return instance;
+        }
 
         // add necessary api headers to every request
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain -> {
@@ -41,7 +47,10 @@ public class ApiServiceFactory {
                 .build();
 
         Retrofit retrofit = retrofitBuilder.client(client).build();
-        return retrofit.create(ApiService.class);
+        instance = retrofit.create(ApiService.class);
+        return instance;
     }
+
+
 
 }
