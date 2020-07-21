@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,10 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
         callButton = findViewById(R.id.callButton);
         recyclerView = findViewById(R.id.recyclerView);
-        adapter = new RecyclerViewAdapter(this);
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Hope this works
         movieViewModel = new ViewModelProvider.Factory() {
@@ -59,47 +56,81 @@ public class MainActivity extends AppCompatActivity {
             }
         }.create(MovieViewModel.class);
 
+
+        adapter = new RecyclerViewAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        movieViewModel.updateTrendingMovies();
 
 //        List<TrendingMovie> movies = movieViewModel.getTrendingMovies();
 
-        movieViewModel.getTrendingMovies().observe(this, movies -> {
-//            StringBuilder toShow = new StringBuilder();
-//            for (TrendingMovie movie : movies) {
-//                toShow.append(movie).append("\n");
-//            }
-//            text.setText(toShow);
-            fillAdapter(movies);
+//        movieViewModel.getTrendingMovies().observe(this, movies -> {
+////            StringBuilder toShow = new StringBuilder();
+////            for (TrendingMovie movie : movies) {
+////                toShow.append(movie).append("\n");
+////            }
+////            text.setText(toShow);
+//            fillAdapterTitles(movies);
+//            adapter.notifyDataSetChanged();
+//            Toast.makeText(this, "Update!", Toast.LENGTH_SHORT).show();
+//        });
+//
+//
+//        movieViewModel.getImagesTrending().observe(this, images -> {
+//            fillAdapterImageURIs(images);
+//            adapter.notifyDataSetChanged();
+//        });
+
+        movieViewModel.getTrendingMoviesData().observe(this, pairs -> {
+            fillAdapter(pairs);
             adapter.notifyDataSetChanged();
-            Toast.makeText(this, "Update!", Toast.LENGTH_SHORT).show();
         });
 
         callButton.setOnClickListener(view -> {
             movieViewModel.updateTrendingMovies();
-//            movieViewModel.clearImages();
+//            movieViewModel.getTrendingMovies().getValue().forEach(x -> movieViewModel.searchImage(x.getMovie().getIds().getTmdb(), "movie"));
         });
     }
 
 
-    // TODO: find a better way to update the view with images
-    private void fillAdapter(List<TrendingMovie> movies) {
-
-        List<Image> imageList = movieViewModel.getImagesTrending().getValue();
-
+    private void fillAdapterTitles(List<TrendingMovie> movies) {
         List<String> titles = new ArrayList<>();
-
-        movieViewModel.clearImages();
-
-        movies.forEach(x -> {
-            movieViewModel.searchImage(x.getMovie().getIds().getTmdb(), "movie");
-//            imageURIs.add("https://image.tmdb.org/t/p/w500/aWhitEcqilcGwHoeJk9yLpMx45F.jpg");
-            titles.add(x.getMovie().getTitle());
-        });
-
-        assert imageList != null;
-        List<String> imageURIs = new ArrayList<>(imageList.stream().map(x -> "https://image.tmdb.org/t/p/w500" + x.getPath()).collect(Collectors.toList()));
-
-        adapter.setImageURIs(imageURIs);
+        movies.forEach(x -> titles.add(x.getMovie().getTitle()));
         adapter.setTitles(titles);
+    }
+
+    private void fillAdapterImageURIs(List<Image> images) {
+        List<String> imageUris = new ArrayList<>();
+        images.forEach(x -> imageUris.add("https://image.tmdb.org/t/p/w500" + x.getPath()));
+        adapter.setImageURIs(imageUris);
+    }
+
+    private void fillAdapter(List<Pair<TrendingMovie, Image>> movies) {
+
+//        List<Image> imageList = movieViewModel.getImagesTrending().getValue();
+//
+//        List<String> titles = new ArrayList<>();
+//
+////        movieViewModel.clearImages();
+//
+//        movies.forEach(x -> {
+//            movieViewModel.searchImage(x.getMovie().getIds().getTmdb(), "movie");
+////            imageURIs.add("https://image.tmdb.org/t/p/w500/aWhitEcqilcGwHoeJk9yLpMx45F.jpg");
+//            titles.add(x.getMovie().getTitle());
+//        });
+//
+//        assert imageList != null;
+//        List<String> imageURIs = new ArrayList<>(imageList.stream().map(x -> "https://image.tmdb.org/t/p/w500" + x.getPath()).collect(Collectors.toList()));
+//
+//        adapter.setImageURIs(imageURIs);
+//        adapter.setTitles(titles);
+        List<String> titles = new ArrayList<>();
+        List<String> imageUris = new ArrayList<>();
+        movies.forEach(p -> {
+            titles.add(p.first.getMovie().getTitle());
+            imageUris.add("https://image.tmdb.org/t/p/w500" + p.second.getPath());
+        });
+        adapter.setTitles(titles);
+        adapter.setImageURIs(imageUris);
     }
 }

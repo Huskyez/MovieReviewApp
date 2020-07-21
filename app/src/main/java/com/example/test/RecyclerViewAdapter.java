@@ -30,6 +30,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.context = context;
     }
 
+    public RecyclerViewAdapter(Context context, List<String> imageURIs, List<String> titles) {
+        this.imageURIs = imageURIs;
+        this.titles = titles;
+        this.context = context;
+    }
+
     public List<String> getImageURIs() {
         return imageURIs;
     }

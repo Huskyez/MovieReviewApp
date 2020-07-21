@@ -1,5 +1,7 @@
 package com.example.test.viewmodel;
 
+import android.util.Pair;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -46,9 +48,13 @@ public class MovieViewModel extends ViewModel {
         return movieRepository.getTrendingMovies();
     }
 
-    public void clearImages() {
-        movieRepository.clearImages();
+    public LiveData<List<Pair<TrendingMovie, Image>>> getTrendingMoviesData() {
+        return movieRepository.getTrendingMoviesData();
     }
+
+//    public void clearImages() {
+//        movieRepository.clearImages();
+//    }
 
     @Override
     protected void onCleared() {

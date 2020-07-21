@@ -1,5 +1,7 @@
 package com.example.test.repo;
 
+import android.util.Pair;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,7 +14,10 @@ import com.example.test.model.TrendingMovie;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,9 +30,21 @@ public class MovieRepository {
     private MutableLiveData<List<TrendingMovie>> movies = new MutableLiveData<>();
     private MutableLiveData<List<Image>> images = new MutableLiveData<>();
 
+    private List<TrendingMovie> moviesList = new ArrayList<>();
+    private List<Image> imagesList = new ArrayList<>();
+
+//    private Map<Integer, Pair<TrendingMovie, Image>> map = new HashMap<>();
+
+    List<Pair<TrendingMovie, Image>> pairList = new ArrayList<>();
+
+    private MutableLiveData<List<Pair<TrendingMovie, Image>>> pairMutableLiveData = new MutableLiveData<>();
 
     public MovieRepository() {
         apiService = ApiServiceFactory.getService();
+        movies.setValue(moviesList);
+        images.setValue(imagesList);
+//        movies = new ArrayList<>();
+//        images = new ArrayList<>();
     }
 
     public MutableLiveData<List<Movie>> getPopularMovies() {
@@ -60,7 +77,7 @@ public class MovieRepository {
     public void searchTrendingMovies() {
         Call<List<TrendingMovie>> call = apiService.getTrending();
 
-        List<TrendingMovie> moviesList = new ArrayList<>();
+//        List<TrendingMovie> moviesList = new ArrayList<>();
 
         call.enqueue(new Callback<List<TrendingMovie>>() {
             @Override
@@ -69,8 +86,16 @@ public class MovieRepository {
                     System.out.println(response.errorBody());
                 }
                 assert response.body() != null;
+//                moviesList
+//                moviesList.addAll(response.body());
+//                movies.setValue(moviesList);
+//                moviesList.forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
+                imagesList.clear();
+                moviesList.clear();
+
                 moviesList.addAll(response.body());
                 movies.setValue(moviesList);
+                moviesList.forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
             }
 
             @Override
@@ -80,9 +105,9 @@ public class MovieRepository {
         });
     }
 
-    public void clearImages() {
-        images.setValue(new ArrayList<>());
-    }
+//    public void clearImages() {
+//        images.setValue(new ArrayList<>());
+//    }
 
     public LiveData<List<Image>> getImagesTrending() {
         return images;
@@ -104,10 +129,16 @@ public class MovieRepository {
                 }
                 assert response.body() != null;
                 ImageSearchResult imageSearchResult = response.body();
-                List<Image> imageList = images.getValue();
-                assert imageList != null;
-                imageList.add(imageSearchResult.getPosters().get(0));
-                images.setValue(imageList);
+//                List<Image> imageList = images.getValue();
+//                assert imageList != null;
+//                imageList.add(imageSearchResult.getPosters().get(0));
+//                images.setValue(imageList);
+                Image toAdd = imageSearchResult.getPosters().get(0);
+                imagesList.add(toAdd);
+                images.setValue(imagesList);
+                Optional<TrendingMovie> movie = moviesList.stream().filter(x -> x.getMovie().getIds().getTmdb().equals(imageSearchResult.getId())).findFirst();
+                movie.ifPresent(trendingMovie -> pairList.add(new Pair<>(trendingMovie, toAdd)));
+                pairMutableLiveData.setValue(pairList);
             }
 
             @Override
@@ -115,6 +146,10 @@ public class MovieRepository {
                 t.getStackTrace();
             }
         });
+    }
+
+    public LiveData<List<Pair<TrendingMovie, Image>>> getTrendingMoviesData() {
+        return pairMutableLiveData;
     }
 
 //    public ImageSearchResult getPreviousImageSearchResult() {
