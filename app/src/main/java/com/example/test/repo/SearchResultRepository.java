@@ -7,6 +7,7 @@ import com.example.test.api.ApiService;
 import com.example.test.api.ApiServiceFactory;
 import com.example.test.model.SearchResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -22,6 +23,7 @@ public class SearchResultRepository {
     public SearchResultRepository() {
         apiService = ApiServiceFactory.getService();
         searchResults = new MutableLiveData<>();
+        searchResults.setValue(new ArrayList<>());
     }
 
     public void search(String type, String query) {

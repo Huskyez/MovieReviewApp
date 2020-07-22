@@ -13,53 +13,52 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.test.R;
 import com.example.test.model.Image;
+import com.example.test.model.Movie;
 import com.example.test.model.TrendingMovie;
 import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-
-    //TODO: Depencency ImageRepo
     private ImageRepository imageRepository;
     private MovieRepository movieRepository;
 
-    private List<String> imageURIs;
-    private List<String> titles;
+    private List<Movie> movies;
+    private Map<Integer, Image> imageMap;
+
     private Context context;
 
     public RecyclerViewAdapter(Context context, ImageRepository imageRepository, MovieRepository movieRepository) {
-        imageURIs = new ArrayList<>();
-        titles = new ArrayList<>();
+
         this.imageRepository = imageRepository;
         this.movieRepository = movieRepository;
         this.context = context;
     }
 
-    public RecyclerViewAdapter(Context context, List<String> imageURIs, List<String> titles) {
-        this.imageURIs = imageURIs;
-        this.titles = titles;
+
+    public RecyclerViewAdapter(Context context) {
         this.context = context;
     }
 
-    public List<String> getImageURIs() {
-        return imageURIs;
+    public List<Movie> getMovies() {
+        return movies;
     }
 
-    public void setImageURIs(List<String> imageURIs) {
-        this.imageURIs = imageURIs;
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
-    public List<String> getTitles() {
-        return titles;
+    public Map<Integer, Image> getImageMap() {
+        return imageMap;
     }
 
-    public void setTitles(List<String> titles) {
-        this.titles = titles;
+    public void setImageMap(Map<Integer, Image> imageMap) {
+        this.imageMap = imageMap;
     }
 
     @NonNull
@@ -71,13 +70,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         List<TrendingMovie> movies = movieRepository.getTrendingMovies().getValue();
         Integer tmdb_id = movies.get(position).getMovie().getIds().getTmdb();
 
         String imageURI;
         Image image = imageRepository.getImage(tmdb_id);
-
 
         if (image != null) {
             imageURI = "https://image.tmdb.org/t/p/w500" + image.getPath();
@@ -95,7 +92,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return movieRepository.getTrendingMovies().getValue().size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageView;
         private TextView textView;

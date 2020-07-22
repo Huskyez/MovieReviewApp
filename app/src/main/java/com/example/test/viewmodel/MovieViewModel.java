@@ -64,6 +64,10 @@ public class MovieViewModel extends ViewModel {
 //        return movieRepository.getTrendingMoviesData();
 //    }
 
+    public ImageRepository getImageRepository() {
+        return imageRepository;
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();

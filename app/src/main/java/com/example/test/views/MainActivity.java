@@ -20,6 +20,7 @@ import com.example.test.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,8 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
 //        movieViewModel.updateTrendingMovies();
 
-        movieRepository.getTrendingMovies().observe(this, trendingMovies -> adapter.notifyDataSetChanged());
-        imageRepository.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
+        movieRepository.getTrendingMovies().observe(this, trendingMovies -> {
+//            adapter.setMovies(trendingMovies.stream().map(TrendingMovie::getMovie).collect(Collectors.toList()));
+            adapter.notifyDataSetChanged();
+        });
+        imageRepository.getImageCache().observe(this, map -> {
+//            adapter.setImageMap(map);
+            adapter.notifyDataSetChanged();
+        });
 
         movieRepository.searchTrendingMovies();
 
@@ -74,15 +81,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void fillAdapter(List<Pair<TrendingMovie, Image>> movies) {
-
-        List<String> titles = new ArrayList<>();
-        List<String> imageUris = new ArrayList<>();
-        movies.forEach(p -> {
-            titles.add(p.first.getMovie().getTitle());
-            imageUris.add("https://image.tmdb.org/t/p/w500" + p.second.getPath());
-        });
-        adapter.setTitles(titles);
-        adapter.setImageURIs(imageUris);
-    }
+//    private void fillAdapter(List<Pair<TrendingMovie, Image>> movies) {
+//
+//        List<String> titles = new ArrayList<>();
+//        List<String> imageUris = new ArrayList<>();
+//        movies.forEach(p -> {
+//            titles.add(p.first.getMovie().getTitle());
+//            imageUris.add("https://image.tmdb.org/t/p/w500" + p.second.getPath());
+//        });
+//        adapter.setTitles(titles);
+//        adapter.setImageURIs(imageUris);
+//    }
 }

@@ -48,9 +48,18 @@ public class ImageRepository {
                 }
                 assert response.body() != null;
                 ImageSearchResult imageSearchResult = response.body();
+
+                if (imageSearchResult == null) {
+                    return;
+                }
                 //find a english poster
                 Optional<Image> optionalImage = imageSearchResult.getPosters().stream().filter(x -> x.getIso_639_1() == null || x.getIso_639_1().equals("en")).findFirst();
                 // if no english poster is found, take the first one
+
+                if (imageSearchResult.getPosters().isEmpty()) {
+                    return;
+                }
+
                 Image toAdd = optionalImage.orElseGet(() -> imageSearchResult.getPosters().get(0));
                 // add image to cache
                 imageMap.put(imageSearchResult.getId(), toAdd);

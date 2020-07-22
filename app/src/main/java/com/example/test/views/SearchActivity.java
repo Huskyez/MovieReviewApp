@@ -1,24 +1,30 @@
 package com.example.test.views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.widget.LinearLayout;
-import android.widget.SearchView;
 
 import com.example.test.R;
-import com.example.test.viewmodel.RecyclerViewAdapter;
-import com.example.test.viewmodel.SearchViewModel;
-import com.example.test.viewmodel.ViewModelFactory;
+import com.example.test.repo.ImageRepository;
+import com.example.test.repo.SearchResultRepository;
+import com.example.test.viewmodel.SearchRecyclerViewAdapter;
 
 public class SearchActivity extends AppCompatActivity {
 
     private SearchView searchView;
     private RecyclerView recyclerView;
-    private SearchViewModel searchViewModel;
+//    private SearchViewModel searchViewModel;
+
+    private SearchResultRepository searchResultRepository;
+    private ImageRepository imageRepository;
+
+    @Override
+    public int getMaxNumPictureInPictureActions() {
+        return super.getMaxNumPictureInPictureActions();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +34,15 @@ public class SearchActivity extends AppCompatActivity {
         searchView = findViewById(R.id.search_bar);
         recyclerView = findViewById(R.id.search_recycler_view);
 
-        searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
+//        searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
 
-//        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this);
-//        recyclerView.setAdapter(adapter);
+        searchResultRepository = new SearchResultRepository();
+        imageRepository = new ImageRepository();
+
+        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(this, imageRepository, searchResultRepository);
+        recyclerView.setAdapter(adapter);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -42,14 +53,15 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                searchViewModel.search("movie", s);
+                searchResultRepository.search("movie", s);
                 return true;
             }
         });
 
-        searchViewModel.getSearchResults().observe(this, searchResults -> {
-
+        searchResultRepository.getSearchResults().observe(this, searchResults -> {
+            adapter.notifyDataSetChanged();
         });
+        imageRepository.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
     }
 
 

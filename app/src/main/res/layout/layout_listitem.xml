@@ -10,8 +10,6 @@
         android:contentDescription="TODO"
         android:src="@mipmap/ic_launcher"
         android:id="@+id/poster"
-        android:maxHeight="100dp"
-        android:maxWidth="75dp"
         />
 
     <TextView

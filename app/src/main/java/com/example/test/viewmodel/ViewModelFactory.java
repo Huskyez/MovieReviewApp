@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
 import com.example.test.repo.SearchResultRepository;
 
@@ -19,7 +20,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         if (modelClass == SearchViewModel.class) {
             SearchResultRepository searchResultRepository = new SearchResultRepository();
-            return (T) new SearchViewModel(searchResultRepository);
+            ImageRepository imageRepository = new ImageRepository();
+            return (T) new SearchViewModel(searchResultRepository, imageRepository);
         }
 
         return null;
