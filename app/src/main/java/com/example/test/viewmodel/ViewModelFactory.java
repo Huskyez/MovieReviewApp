@@ -13,15 +13,22 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+        ImageRepository imageRepository = ImageRepository.getInstance();
+        MovieRepository movieRepository = MovieRepository.getInstance();
+        SearchResultRepository searchResultRepository = SearchResultRepository.getInstance();
+
         if (modelClass == MovieViewModel.class) {
-            MovieRepository movieRepository = new MovieRepository();
-            return (T) new MovieViewModel(movieRepository);
+
+            return (T) new MovieViewModel(movieRepository, imageRepository);
         }
 
         if (modelClass == SearchViewModel.class) {
-            SearchResultRepository searchResultRepository = new SearchResultRepository();
-            ImageRepository imageRepository = new ImageRepository();
+
             return (T) new SearchViewModel(searchResultRepository, imageRepository);
+        }
+
+        if (modelClass == MovieDetailsViewModel.class) {
+            return (T) new MovieDetailsViewModel(movieRepository, imageRepository);
         }
 
         return null;

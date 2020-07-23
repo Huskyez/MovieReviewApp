@@ -10,6 +10,7 @@ import com.example.test.api.ApiServiceFactory;
 import com.example.test.model.Image;
 import com.example.test.model.ImageSearchResult;
 import com.example.test.model.Movie;
+import com.example.test.model.MovieDetails;
 import com.example.test.model.SearchResult;
 import com.example.test.model.TrendingMovie;
 
@@ -26,22 +27,36 @@ import retrofit2.Response;
 
 public class MovieRepository {
 
+    private static MovieRepository instance = null;
+
     private ApiService apiService;
 
-    private MutableLiveData<List<TrendingMovie>> movies = new MutableLiveData<>();
-//    private MutableLiveData<List<Image>> images = new MutableLiveData<>();
-
     private List<TrendingMovie> moviesList = new ArrayList<>();
+    private MutableLiveData<List<TrendingMovie>> movies = new MutableLiveData<>();
+
+    private MovieDetails movieDetails;
+    private MutableLiveData<MovieDetails> movieDetailsLiveData = new MutableLiveData<>();
+
 //    private List<Image> imagesList = new ArrayList<>();
 
 //    List<Pair<TrendingMovie, Image>> pairList = new ArrayList<>();
 //    private MutableLiveData<List<Pair<TrendingMovie, Image>>> pairMutableLiveData = new MutableLiveData<>();
 
-    public MovieRepository() {
+    private MovieRepository() {
         apiService = ApiServiceFactory.getService();
         movies.setValue(moviesList);
+        movieDetailsLiveData.setValue(movieDetails);
 //        images.setValue(imagesList);
 
+    }
+
+    public static MovieRepository getInstance() {
+        if (instance == null) {
+            instance = new MovieRepository();
+            return instance;
+        }
+
+        return instance;
     }
 
     public MutableLiveData<List<Movie>> getPopularMovies() {
@@ -98,39 +113,27 @@ public class MovieRepository {
         });
     }
 
-//    public LiveData<List<Image>> getImagesTrending() {
-//        return images;
-//    }
+    public void searchMovieDetails(String slug_id) {
+        Call<MovieDetails> call = apiService.getMovieDetails(slug_id);
 
-    //TODO: refactor this, does too much stuff
-//    public void searchImage(Integer tmdb_id, String type) {
-//
-//        Call<ImageSearchResult> call = apiService.searchImages(type, tmdb_id, "366bb8cd1b82ca2f219a0f72303f68e9");
-//
-//        call.enqueue(new Callback<ImageSearchResult>() {
-//            @Override
-//            public void onResponse(Call<ImageSearchResult> call, Response<ImageSearchResult> response) {
-//                if (!response.isSuccessful()) {
-//                    System.out.println(response.errorBody());
-//                }
-//                assert response.body() != null;
-//                ImageSearchResult imageSearchResult = response.body();
-//                Optional<Image> optionalImage = imageSearchResult.getPosters().stream().filter(x -> x.getIso_639_1() == null || x.getIso_639_1().equals("en")).findFirst();
-//                Image toAdd = optionalImage.orElseGet(() -> imageSearchResult.getPosters().get(0));
-//                Optional<TrendingMovie> movie = moviesList.stream().filter(x -> x.getMovie().getIds().getTmdb().equals(imageSearchResult.getId())).findFirst();
-//                movie.ifPresent(trendingMovie -> pairList.add(new Pair<>(trendingMovie, toAdd)));
-//                pairMutableLiveData.setValue(pairList);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ImageSearchResult> call, Throwable t) {
-//                t.getStackTrace();
-//            }
-//        });
-//    }
+        call.enqueue(new Callback<MovieDetails>() {
+            @Override
+            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println(response.errorBody());
+                }
+                movieDetails = response.body();
+                movieDetailsLiveData.setValue(movieDetails);
+            }
 
-//    public LiveData<List<Pair<TrendingMovie, Image>>> getTrendingMoviesData() {
-//        return pairMutableLiveData;
-//    }
+            @Override
+            public void onFailure(Call<MovieDetails> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
 
+    public LiveData<MovieDetails> getMovieDetails() {
+        return movieDetailsLiveData;
+    }
 }

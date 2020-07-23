@@ -16,26 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MovieViewModel extends ViewModel {
+public class MovieViewModel extends AbstractImageViewModel {
 
     private MovieRepository movieRepository;
-    private ImageRepository imageRepository;
 
-    private MutableLiveData<List<TrendingMovie>> trendingMovies;
-    private MutableLiveData<Map<Integer, Image>> trendingMovieImages;
-
-    private MutableLiveData<List<Pair<TrendingMovie, Image>>> trendingMovieData;
-
-
-    public MovieViewModel(MovieRepository movieRepository) {
-        trendingMovies = new MutableLiveData<>();
-        trendingMovieImages = new MutableLiveData<>();
-        this.movieRepository = movieRepository;
-
-//        imageRespository.getImageCache().observe(this, map -> {
+//    private MutableLiveData<List<TrendingMovie>> trendingMovies;
+//    private MutableLiveData<Map<Integer, Image>> trendingMovieImages;
 //
-//        });
+//    private MutableLiveData<List<Pair<TrendingMovie, Image>>> trendingMovieData;
 
+    public MovieViewModel(MovieRepository movieRepository, ImageRepository imageRepository) {
+        super(imageRepository);
+        this.movieRepository = movieRepository;
+//        trendingMovies = new MutableLiveData<>();
+//        trendingMovieImages = new MutableLiveData<>();
     }
 
     public LiveData<List<Movie>> getPopularMovies() {
@@ -46,26 +40,8 @@ public class MovieViewModel extends ViewModel {
         movieRepository.searchTrendingMovies();
     }
 
-//    public void searchImage(Integer tmdb_id, String type) {
-//        movieRepository.searchImage(tmdb_id, type);
-//    }
-
-//    public LiveData<List<Image>> getImagesTrending() {
-//        return movieRepository.getImagesTrending();
-//    }
-
     public LiveData<List<TrendingMovie>> getTrendingMovies() {
         return movieRepository.getTrendingMovies();
-    }
-
-//    public LiveData<List<Pair<TrendingMovie, Image>>> getTrendingMoviesData() {
-//        List<Pair<TrendingMovie, Image>> pairList = new ArrayList<>();
-//
-//        return movieRepository.getTrendingMoviesData();
-//    }
-
-    public ImageRepository getImageRepository() {
-        return imageRepository;
     }
 
     @Override

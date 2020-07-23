@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiServiceFactory {
 
     //TODO: take this from a configuration file
-    // SO MANY F***ING KEYS
     private static final String BASE_URL = "https://api.trakt.tv/";
 
     private static final String API_VERSION_HEADER = "trakt-api-version";

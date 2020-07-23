@@ -24,16 +24,27 @@ import retrofit2.Response;
 
 public class ImageRepository {
 
+    private static ImageRepository instance = null;
+
     private ApiService apiService;
 
     // These contain a list of images from the last request
     private Map<Integer, Image> imageMap; // tmdb_id and image
     private MutableLiveData<Map<Integer, Image>> imageMutableLiveData;
 
-    public ImageRepository() {
+    private ImageRepository() {
         apiService = ApiServiceFactory.getService();
         imageMutableLiveData = new MutableLiveData<>();
         imageMap = new HashMap<>();
+    }
+
+    public static ImageRepository getInstance() {
+        if (instance == null) {
+            instance = new ImageRepository();
+            return instance;
+        }
+
+        return instance;
     }
 
     public void searchImage(Integer tmdb_id, String type) {

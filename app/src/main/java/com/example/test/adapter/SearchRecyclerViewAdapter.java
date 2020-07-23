@@ -1,4 +1,4 @@
-package com.example.test.viewmodel;
+package com.example.test.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,20 +18,19 @@ import com.example.test.model.Image;
 import com.example.test.model.SearchResult;
 import com.example.test.repo.ImageRepository;
 import com.example.test.repo.SearchResultRepository;
+import com.example.test.viewmodel.SearchViewModel;
 
 import java.util.List;
 
 
 public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder>{
 
-    private ImageRepository imageRepository;
-    private SearchResultRepository searchResultRepository;
+
+    private SearchViewModel searchViewModel;
     private Context context;
 
-    public SearchRecyclerViewAdapter(Context context, ImageRepository imageRepository, SearchResultRepository searchResultRepository) {
-
-        this.imageRepository = imageRepository;
-        this.searchResultRepository = searchResultRepository;
+    public SearchRecyclerViewAdapter(Context context, SearchViewModel searchViewModel) {
+        this.searchViewModel = searchViewModel;
         this.context = context;
     }
 
@@ -44,7 +43,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
     @Override
     public void onBindViewHolder(@NonNull SearchRecyclerViewAdapter.ViewHolder holder, int position) {
-        List<SearchResult> searchResults = searchResultRepository.getSearchResults().getValue();
+        List<SearchResult> searchResults = searchViewModel.getSearchResults().getValue();
         Integer tmdb_id = searchResults.get(position).getMovie().getIds().getTmdb();
 
         if (searchResults == null) {
@@ -52,12 +51,12 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         }
 
         String imageURI;
-        Image image = imageRepository.getImage(tmdb_id);
+        Image image = searchViewModel.getImage(tmdb_id);
 
         if (image != null) {
             imageURI = "https://image.tmdb.org/t/p/w500" + image.getPath();
         } else {
-            imageRepository.searchImage(tmdb_id, "movie");
+            searchViewModel.searchImage(tmdb_id, "movie");
             imageURI = "https://i.pinimg.com/originals/10/b2/f6/10b2f6d95195994fca386842dae53bb2.png";
         }
 
@@ -73,7 +72,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
     @Override
     public int getItemCount() {
-        return searchResultRepository.getSearchResults().getValue().size();
+        return searchViewModel.getSearchResults().getValue() == null ? 0 : searchViewModel.getSearchResults().getValue().size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

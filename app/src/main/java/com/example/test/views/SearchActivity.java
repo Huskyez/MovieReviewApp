@@ -10,16 +10,16 @@ import android.os.Bundle;
 import com.example.test.R;
 import com.example.test.repo.ImageRepository;
 import com.example.test.repo.SearchResultRepository;
-import com.example.test.viewmodel.SearchRecyclerViewAdapter;
+import com.example.test.adapter.SearchRecyclerViewAdapter;
+import com.example.test.viewmodel.SearchViewModel;
+import com.example.test.viewmodel.ViewModelFactory;
 
 public class SearchActivity extends AppCompatActivity {
 
     private SearchView searchView;
     private RecyclerView recyclerView;
-//    private SearchViewModel searchViewModel;
+    private SearchViewModel searchViewModel;
 
-    private SearchResultRepository searchResultRepository;
-    private ImageRepository imageRepository;
 
     @Override
     public int getMaxNumPictureInPictureActions() {
@@ -34,12 +34,10 @@ public class SearchActivity extends AppCompatActivity {
         searchView = findViewById(R.id.search_bar);
         recyclerView = findViewById(R.id.search_recycler_view);
 
-//        searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
+        searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
 
-        searchResultRepository = new SearchResultRepository();
-        imageRepository = new ImageRepository();
 
-        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(this, imageRepository, searchResultRepository);
+        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(this, searchViewModel);
         recyclerView.setAdapter(adapter);
 
 
@@ -53,15 +51,14 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                searchResultRepository.search("movie", s);
+                searchViewModel.search("movie", s);
                 return true;
             }
+
         });
 
-        searchResultRepository.getSearchResults().observe(this, searchResults -> {
-            adapter.notifyDataSetChanged();
-        });
-        imageRepository.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
+        searchViewModel.getSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
+        searchViewModel.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
     }
 
 

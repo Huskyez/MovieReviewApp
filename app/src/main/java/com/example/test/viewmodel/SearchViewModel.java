@@ -11,16 +11,15 @@ import com.example.test.repo.SearchResultRepository;
 import java.util.List;
 import java.util.Map;
 
-public class SearchViewModel extends ViewModel {
+public class SearchViewModel extends AbstractImageViewModel {
 
     private SearchResultRepository searchResultRepository;
-    private ImageRepository imageRepository;
 
 //    private MutableLiveData<List<SearchResult>> searchResultList;
 
     public SearchViewModel(SearchResultRepository searchResultRepository, ImageRepository imageRepository) {
+        super(imageRepository);
         this.searchResultRepository = searchResultRepository;
-        this.imageRepository = imageRepository;
     }
 
     public LiveData<List<SearchResult>> getSearchResults() {
@@ -31,8 +30,7 @@ public class SearchViewModel extends ViewModel {
         searchResultRepository.search(type, query);
     }
 
-    public LiveData<Map<Integer, Image>> getImageCache() {
-        return imageRepository.getImageCache();
-    }
+
+
 
 }

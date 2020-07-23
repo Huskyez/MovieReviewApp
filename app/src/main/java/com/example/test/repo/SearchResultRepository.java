@@ -16,14 +16,25 @@ import retrofit2.Response;
 
 public class SearchResultRepository {
 
+    private static SearchResultRepository instance = null;
+
     private ApiService apiService;
 
     private MutableLiveData<List<SearchResult>> searchResults;
 
-    public SearchResultRepository() {
+    private SearchResultRepository() {
         apiService = ApiServiceFactory.getService();
         searchResults = new MutableLiveData<>();
         searchResults.setValue(new ArrayList<>());
+    }
+
+    public static SearchResultRepository getInstance() {
+        if (instance == null) {
+            instance = new SearchResultRepository();
+            return instance;
+        }
+
+        return instance;
     }
 
     public void search(String type, String query) {
