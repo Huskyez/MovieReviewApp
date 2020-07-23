@@ -1,6 +1,7 @@
 package com.example.test.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,10 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         List<SearchResult> searchResults = searchResultRepository.getSearchResults().getValue();
         Integer tmdb_id = searchResults.get(position).getMovie().getIds().getTmdb();
 
+        if (searchResults == null) {
+            return;
+        }
+
         String imageURI;
         Image image = imageRepository.getImage(tmdb_id);
 
@@ -58,7 +63,12 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
         Glide.with(context).asBitmap().load(imageURI).into(holder.ivPoster);
         holder.tvMovieTitle.setText(searchResults.get(position).getMovie().getTitle());
-        holder.tvReleaseYear.setText(searchResults.get(position).getMovie().getYear().toString());
+        try {
+            holder.tvReleaseYear.setText(searchResults.get(position).getMovie().getYear().toString());
+        } catch (NullPointerException e) {
+            Log.e("Error","Movie:" + searchResults.get(position).getMovie());
+        }
+
     }
 
     @Override
