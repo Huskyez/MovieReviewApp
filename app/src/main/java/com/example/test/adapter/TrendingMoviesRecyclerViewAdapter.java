@@ -14,38 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.test.R;
 import com.example.test.model.Image;
-import com.example.test.model.Movie;
-import com.example.test.model.TrendingMovie;
-import com.example.test.repo.ImageRepository;
-import com.example.test.repo.MovieRepository;
+import com.example.test.model.movie.Movie;
+import com.example.test.model.movie.TrendingMovie;
 import com.example.test.viewmodel.MovieViewModel;
 import com.example.test.views.MovieDetailActivity;
 
 import java.util.List;
-import java.util.Map;
 
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private ImageRepository imageRepository;
-    private MovieRepository movieRepository;
+public class TrendingMoviesRecyclerViewAdapter extends RecyclerView.Adapter<TrendingMoviesRecyclerViewAdapter.ViewHolder> {
 
     private MovieViewModel movieViewModel;
-
-    private List<Movie> movies;
-    private Map<Integer, Image> imageMap;
-
     private Context context;
 
-    public RecyclerViewAdapter(Context context, ImageRepository imageRepository, MovieRepository movieRepository) {
-
-        this.imageRepository = imageRepository;
-        this.movieRepository = movieRepository;
-        this.context = context;
-    }
-
-
-    public RecyclerViewAdapter(Context context, MovieViewModel movieViewModel) {
+    public TrendingMoviesRecyclerViewAdapter(Context context, MovieViewModel movieViewModel) {
         this.context = context;
         this.movieViewModel = movieViewModel;
     }
@@ -91,21 +74,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private TextView textView;
         private String slug_id;
         private Integer tmdb_id;
-//        private LinearLayout layout;
+        private View layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.poster);
             textView = itemView.findViewById(R.id.title);
+            layout = itemView.findViewById(R.id.list_item);
 
-            imageView.setOnClickListener(view -> {
+            layout.setOnClickListener(view -> {
                 Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
                 intent.putExtra("slug_id", slug_id);
                 intent.putExtra("tmdb_id", tmdb_id);
                 view.getContext().startActivity(intent);
             });
-
-//            layout = itemView.findViewById(R.id.list_item);
         }
     }
 }

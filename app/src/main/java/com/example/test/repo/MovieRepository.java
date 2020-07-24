@@ -1,25 +1,17 @@
 package com.example.test.repo;
 
-import android.util.Pair;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.test.api.ApiService;
 import com.example.test.api.ApiServiceFactory;
-import com.example.test.model.Image;
-import com.example.test.model.ImageSearchResult;
-import com.example.test.model.Movie;
-import com.example.test.model.MovieDetails;
-import com.example.test.model.SearchResult;
-import com.example.test.model.TrendingMovie;
+import com.example.test.model.movie.AnticipatedMovie;
+import com.example.test.model.movie.Movie;
+import com.example.test.model.movie.MovieDetails;
+import com.example.test.model.movie.TrendingMovie;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,23 +23,23 @@ public class MovieRepository {
 
     private ApiService apiService;
 
-    private List<TrendingMovie> moviesList = new ArrayList<>();
-    private MutableLiveData<List<TrendingMovie>> movies = new MutableLiveData<>();
+    private List<Movie> popularMovies = new ArrayList<>();
+    private MutableLiveData<List<Movie>> popularMoviesLiveData = new MutableLiveData<>();
+
+    private List<TrendingMovie> trendingMovies = new ArrayList<>();
+    private MutableLiveData<List<TrendingMovie>> trendingMoviesLiveData = new MutableLiveData<>();
+
+    private List<AnticipatedMovie> anticipatedMovies = new ArrayList<>();
+    private MutableLiveData<List<AnticipatedMovie>> anticipatedMoviesLiveData = new MutableLiveData<>();
 
     private MovieDetails movieDetails;
     private MutableLiveData<MovieDetails> movieDetailsLiveData = new MutableLiveData<>();
 
-//    private List<Image> imagesList = new ArrayList<>();
-
-//    List<Pair<TrendingMovie, Image>> pairList = new ArrayList<>();
-//    private MutableLiveData<List<Pair<TrendingMovie, Image>>> pairMutableLiveData = new MutableLiveData<>();
 
     private MovieRepository() {
         apiService = ApiServiceFactory.getService();
-        movies.setValue(moviesList);
+        trendingMoviesLiveData.setValue(trendingMovies);
         movieDetailsLiveData.setValue(movieDetails);
-//        images.setValue(imagesList);
-
     }
 
     public static MovieRepository getInstance() {
@@ -59,10 +51,8 @@ public class MovieRepository {
         return instance;
     }
 
-    public MutableLiveData<List<Movie>> getPopularMovies() {
-        Call<List<Movie>> call = apiService.getPopular();
-
-        MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
+    public void searchPopularMovies() {
+        Call<List<Movie>> call = apiService.getPopularMovies();
 
         call.enqueue(new Callback<List<Movie>>() {
             @Override
@@ -70,7 +60,10 @@ public class MovieRepository {
                 if (!response.isSuccessful()) {
                     //TODO: do some error handling
                 }
-                movies.setValue(response.body());
+                assert response.body() != null;
+                popularMovies.clear();
+                popularMovies.addAll(response.body());
+                popularMoviesLiveData.setValue(popularMovies);
             }
 
             @Override
@@ -78,16 +71,18 @@ public class MovieRepository {
                 t.getStackTrace();
             }
         });
+    }
 
-        return movies;
+    public LiveData<List<Movie>> getPopularMovies() {
+        return popularMoviesLiveData;
     }
 
     public LiveData<List<TrendingMovie>> getTrendingMovies() {
-        return movies;
+        return trendingMoviesLiveData;
     }
 
     public void searchTrendingMovies() {
-        Call<List<TrendingMovie>> call = apiService.getTrending();
+        Call<List<TrendingMovie>> call = apiService.getTrendingMovies();
 
         call.enqueue(new Callback<List<TrendingMovie>>() {
             @Override
@@ -96,12 +91,9 @@ public class MovieRepository {
                     System.out.println(response.errorBody());
                 }
                 assert response.body() != null;
-//                imagesList.clear();
-                moviesList.clear();
-//                pairList.clear();
-
-                moviesList.addAll(response.body());
-                movies.setValue(moviesList);
+                trendingMovies.clear();
+                trendingMovies.addAll(response.body());
+                trendingMoviesLiveData.setValue(trendingMovies);
 //                moviesList.forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
 //                response.body().forEach(x -> searchImage(x.getMovie().getIds().getTmdb(), "movie"));
             }
@@ -135,5 +127,31 @@ public class MovieRepository {
 
     public LiveData<MovieDetails> getMovieDetails() {
         return movieDetailsLiveData;
+    }
+
+    public void searchAnticipatedMovies() {
+        Call<List<AnticipatedMovie>> call = apiService.getAnticipatedMovies();
+
+        call.enqueue(new Callback<List<AnticipatedMovie>>() {
+            @Override
+            public void onResponse(Call<List<AnticipatedMovie>> call, Response<List<AnticipatedMovie>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println(response.errorBody());
+                }
+                assert response.body() != null;
+                anticipatedMovies.clear();
+                anticipatedMovies.addAll(response.body());
+                anticipatedMoviesLiveData.setValue(anticipatedMovies);
+            }
+
+            @Override
+            public void onFailure(Call<List<AnticipatedMovie>> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public LiveData<List<AnticipatedMovie>> getAnticipatedMovies() {
+        return anticipatedMoviesLiveData;
     }
 }

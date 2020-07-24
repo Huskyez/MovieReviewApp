@@ -1,77 +1,47 @@
 package com.example.test.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.os.Bundle;
+import androidx.appcompat.view.menu.ActionMenuItemView;
+import androidx.fragment.app.Fragment;
 
 import com.example.test.R;
-import com.example.test.adapter.RecyclerViewAdapter;
-import com.example.test.viewmodel.MovieViewModel;
-import com.example.test.viewmodel.ViewModelFactory;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
-
-
-    private RecyclerView recyclerView;
-    private RecyclerViewAdapter adapter;
-
-    private MovieViewModel movieViewModel;
-
-//    private MovieRepository movieRepository;
-//    private ImageRepository imageRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerView);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
-        // Hope this works
-        movieViewModel = new ViewModelFactory().create(MovieViewModel.class);
-//        movieRepository = new MovieRepository();
-//        imageRepository = new ImageRepository();
+            Fragment fragment = null;
+            switch (item.getItemId()) {
+                case R.id.nav_movie:
+                    fragment = MoviePageFragment.newInstance();
+                    break;
+                default:
+                    fragment = new PopularMoviesFragment();
+                    break;
+            }
 
-        adapter = new RecyclerViewAdapter(this, movieViewModel);
-        recyclerView.setAdapter(adapter);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-//        movieViewModel.updateTrendingMovies();
-
-        movieViewModel.getTrendingMovies().observe(this, trendingMovies -> {
-//            adapter.setMovies(trendingMovies.stream().map(TrendingMovie::getMovie).collect(Collectors.toList()));
-            adapter.notifyDataSetChanged();
-        });
-        movieViewModel.getImageCache().observe(this, map -> {
-//            adapter.setImageMap(map);
-            adapter.notifyDataSetChanged();
+            return true;
         });
 
-        movieViewModel.updateTrendingMovies();
-
-        SwipeRefreshLayout layout = findViewById(R.id.trending_swipe_layout);
-        layout.setOnRefreshListener(() -> {
-            movieViewModel.updateTrendingMovies();
-            layout.setRefreshing(false);
+        ActionMenuItemView searchItem = findViewById(R.id.search_button);
+        searchItem.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
         });
-
-
     }
-
-//    private void fillAdapter(List<Pair<TrendingMovie, Image>> movies) {
-//
-//        List<String> titles = new ArrayList<>();
-//        List<String> imageUris = new ArrayList<>();
-//        movies.forEach(p -> {
-//            titles.add(p.first.getMovie().getTitle());
-//            imageUris.add("https://image.tmdb.org/t/p/w500" + p.second.getPath());
-//        });
-//        adapter.setTitles(titles);
-//        adapter.setImageURIs(imageUris);
-//    }
 }

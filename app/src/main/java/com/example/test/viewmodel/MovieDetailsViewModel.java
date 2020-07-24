@@ -1,15 +1,10 @@
 package com.example.test.viewmodel;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.test.model.Image;
-import com.example.test.model.Movie;
-import com.example.test.model.MovieDetails;
+import com.example.test.model.movie.MovieDetails;
 import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
-
-import java.util.Map;
 
 public class MovieDetailsViewModel extends AbstractImageViewModel {
 

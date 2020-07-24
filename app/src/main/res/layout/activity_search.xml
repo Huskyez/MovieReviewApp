@@ -12,15 +12,17 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimaryDark"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/toolbar"
+        android:paddingBottom="10dp"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+        android:id="@+id/app_bar_layout"
         >
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_scrollFlags="enterAlways"
             app:popupTheme="@style/Theme.AppCompat.Light"
             >
-
             <androidx.appcompat.widget.SearchView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,8 +30,6 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:id="@+id/search_bar"
                 />
-
-
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,12 +37,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:id="@+id/search_recycler_view"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

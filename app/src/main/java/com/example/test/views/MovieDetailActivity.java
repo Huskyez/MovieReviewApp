@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.test.R;
 import com.example.test.model.Image;
-import com.example.test.repo.ImageRepository;
-import com.example.test.repo.MovieRepository;
 import com.example.test.viewmodel.MovieDetailsViewModel;
 import com.example.test.viewmodel.ViewModelFactory;
 
@@ -18,6 +16,8 @@ import java.text.SimpleDateFormat;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+
+    //TODO: make a nicer layout
 
     private MovieDetailsViewModel movieDetailsViewModel;
 

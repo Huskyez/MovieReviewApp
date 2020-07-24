@@ -1,7 +1,5 @@
 package com.example.test.repo;
 
-import android.util.Pair;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,12 +7,8 @@ import com.example.test.api.ApiService;
 import com.example.test.api.ApiServiceFactory;
 import com.example.test.model.Image;
 import com.example.test.model.ImageSearchResult;
-import com.example.test.model.TrendingMovie;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

@@ -1,5 +1,6 @@
-package com.example.test.model;
+package com.example.test.model.movie;
 
+import com.example.test.model.Ids;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;

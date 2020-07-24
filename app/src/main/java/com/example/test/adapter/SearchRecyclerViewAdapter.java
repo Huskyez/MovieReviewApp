@@ -1,6 +1,7 @@
 package com.example.test.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,8 @@ import com.example.test.R;
 import com.example.test.model.Image;
 
 import com.example.test.model.SearchResult;
-import com.example.test.repo.ImageRepository;
-import com.example.test.repo.SearchResultRepository;
 import com.example.test.viewmodel.SearchViewModel;
+import com.example.test.views.MovieDetailActivity;
 
 import java.util.List;
 
@@ -44,7 +44,9 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     @Override
     public void onBindViewHolder(@NonNull SearchRecyclerViewAdapter.ViewHolder holder, int position) {
         List<SearchResult> searchResults = searchViewModel.getSearchResults().getValue();
-        Integer tmdb_id = searchResults.get(position).getMovie().getIds().getTmdb();
+        SearchResult searchResult = searchResults.get(position);
+
+        Integer tmdb_id = searchResult.getMovie().getIds().getTmdb();
 
         if (searchResults == null) {
             return;
@@ -61,13 +63,15 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         }
 
         Glide.with(context).asBitmap().load(imageURI).into(holder.ivPoster);
-        holder.tvMovieTitle.setText(searchResults.get(position).getMovie().getTitle());
+        holder.tvMovieTitle.setText(searchResult.getMovie().getTitle());
         try {
-            holder.tvReleaseYear.setText(searchResults.get(position).getMovie().getYear().toString());
+            holder.tvReleaseYear.setText(searchResult.getMovie().getYear().toString());
         } catch (NullPointerException e) {
+            holder.tvReleaseYear.setText("UNKNOWN");
             Log.e("Error","Movie:" + searchResults.get(position).getMovie());
         }
-
+        holder.slug_id = searchResult.getMovie().getIds().getSlug();
+        holder.tmdb_id = searchResult.getMovie().getIds().getTmdb();
     }
 
     @Override
@@ -80,14 +84,25 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         private ImageView ivPoster;
         private TextView tvMovieTitle;
         private TextView tvReleaseYear;
-//        private LinearLayout layout;
+
+        private String slug_id;
+        private Integer tmdb_id;
+
+        private View layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivPoster = itemView.findViewById(R.id.image);
             tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
             tvReleaseYear = itemView.findViewById(R.id.tv_release_year);
-//            layout = itemView.findViewById(R.id.list_item);
+            layout = itemView.findViewById(R.id.search_item);
+
+            layout.setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
+                intent.putExtra("slug_id", slug_id);
+                intent.putExtra("tmdb_id", tmdb_id);
+                view.getContext().startActivity(intent);
+            });
         }
     }
 }

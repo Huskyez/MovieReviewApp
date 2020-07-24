@@ -2,14 +2,13 @@ package com.example.test.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
 import com.example.test.R;
-import com.example.test.repo.ImageRepository;
-import com.example.test.repo.SearchResultRepository;
 import com.example.test.adapter.SearchRecyclerViewAdapter;
 import com.example.test.viewmodel.SearchViewModel;
 import com.example.test.viewmodel.ViewModelFactory;
@@ -21,21 +20,28 @@ public class SearchActivity extends AppCompatActivity {
     private SearchViewModel searchViewModel;
 
 
-    @Override
-    public int getMaxNumPictureInPictureActions() {
-        return super.getMaxNumPictureInPictureActions();
-    }
+//    @Override
+//    public int getMaxNumPictureInPictureActions() {
+//        return super.getMaxNumPictureInPictureActions();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         searchView = findViewById(R.id.search_bar);
+        // open the search view
+        searchView.setIconified(false);
+
+
         recyclerView = findViewById(R.id.search_recycler_view);
 
         searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
-
 
         SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(this, searchViewModel);
         recyclerView.setAdapter(adapter);

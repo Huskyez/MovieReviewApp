@@ -1,27 +1,20 @@
-package com.example.test.model;
+package com.example.test.model.show;
 
-import androidx.annotation.NonNull;
+import com.example.test.model.Ids;
 
-public class Movie {
+public class Show {
 
     private String title;
     private Integer year;
-
     private Ids ids;
 
-    public Movie() {
+    public Show() {
     }
 
-    public Movie(String title, Integer year, Ids ids) {
+    public Show(String title, Integer year, Ids ids) {
         this.title = title;
         this.year = year;
         this.ids = ids;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return title + " - " + year + " - " + ids;
     }
 
     public String getTitle() {

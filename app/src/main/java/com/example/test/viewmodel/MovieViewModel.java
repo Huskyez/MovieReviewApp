@@ -1,20 +1,13 @@
 package com.example.test.viewmodel;
 
-import android.util.Pair;
-
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.test.model.Image;
-import com.example.test.model.Movie;
-import com.example.test.model.TrendingMovie;
+import com.example.test.model.movie.Movie;
+import com.example.test.model.movie.TrendingMovie;
 import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MovieViewModel extends AbstractImageViewModel {
 
@@ -34,6 +27,10 @@ public class MovieViewModel extends AbstractImageViewModel {
 
     public LiveData<List<Movie>> getPopularMovies() {
         return movieRepository.getPopularMovies();
+    }
+
+    public void updatePopularMovies() {
+        movieRepository.searchPopularMovies();
     }
 
     public void updateTrendingMovies() {
