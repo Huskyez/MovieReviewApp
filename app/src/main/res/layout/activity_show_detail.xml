@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.movie.MovieDetailActivity">
+    tools:context=".views.show.ShowDetailActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,35 +14,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
-        >
+        android:gravity="center">
         <ImageView
             android:layout_width="180dp"
             android:layout_height="240dp"
+            android:contentDescription="TODO"
             android:src="@mipmap/ic_launcher"
-            android:id="@+id/image"
+            android:id="@+id/poster"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TITLE"
             android:textSize="40sp"
-            android:id="@+id/tv_movie_title"
-            />
-
+            android:id="@+id/tv_title"
+        />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="YEAR"
             android:textSize="30sp"
             android:id="@+id/tv_year"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TAGLINE"
-            android:textSize="30sp"
-            android:id="@+id/tv_tagline"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -53,9 +46,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RUNTIME"
+            android:text="STATUS"
             android:textSize="20sp"
-            android:id="@+id/tv_runtime"
+            android:id="@+id/tv_status"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EPISODES"
+            android:textSize="20sp"
+            android:id="@+id/tv_nr_episodes"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -66,7 +66,5 @@
             />
 
     </LinearLayout>
-    
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

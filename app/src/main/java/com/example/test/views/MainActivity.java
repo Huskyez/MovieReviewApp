@@ -1,17 +1,17 @@
 package com.example.test.views;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.Fragment;
 
 import com.example.test.R;
+import com.example.test.views.movie.MoviePageFragment;
+import com.example.test.views.movie.PopularMoviesFragment;
+import com.example.test.views.show.ShowPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,13 +28,15 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_movie:
                     fragment = MoviePageFragment.newInstance();
                     break;
+                case R.id.nav_shows:
+                    fragment = ShowPageFragment.newInstance();
+                    break;
                 default:
                     fragment = new PopularMoviesFragment();
                     break;
             }
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
-
             return true;
         });
 

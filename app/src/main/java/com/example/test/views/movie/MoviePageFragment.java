@@ -1,4 +1,4 @@
-package com.example.test.views;
+package com.example.test.views.movie;
 
 import android.os.Bundle;
 
@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import com.example.test.R;
 
@@ -28,11 +27,16 @@ public class MoviePageFragment extends Fragment {
 //    private static final String ARG_PARAM2 = "param2";
 
 //    private String mParam1;
-//    private String mParam2; private List<Fragment> fragmentList;
+//    private String mParam2;
 
+    private List<Fragment> fragmentList;
 
     public MoviePageFragment() {
         // Required empty public constructor
+    }
+
+    public void setFragmentList(List<Fragment> fragmentList) {
+        this.fragmentList = fragmentList;
     }
 
     /**
@@ -41,12 +45,10 @@ public class MoviePageFragment extends Fragment {
      *
      * @return A new instance of fragment MoviePageFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MoviePageFragment newInstance() {
         MoviePageFragment fragment = new MoviePageFragment();
+//        fragment.setFragmentList(fragments);
 //        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
 //        fragment.setArguments(args);
         return fragment;
     }
@@ -54,10 +56,6 @@ public class MoviePageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
     }
 
     @Override
@@ -73,15 +71,17 @@ public class MoviePageFragment extends Fragment {
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-
         //TODO: pass a list of fragments instead of having them hardcoded
         //TODO: (another one) these fragments should have the same layout
         // -> refactor it (same adapter)
         TrendingMoviesFragment trendingMoviesFragment = TrendingMoviesFragment.newInstance();
         PopularMoviesFragment popularMoviesFragment = PopularMoviesFragment.newInstance();
+        AnticipatedMoviesFragment anticipatedMoviesFragment = AnticipatedMoviesFragment.newInstance();
+
 
         transaction.add(R.id.fragment_container, popularMoviesFragment);
         transaction.add(R.id.fragment_container, trendingMoviesFragment);
+        transaction.add(R.id.fragment_container, anticipatedMoviesFragment);
         transaction.commit();
     }
 

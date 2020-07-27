@@ -17,7 +17,7 @@ import com.example.test.model.Image;
 import com.example.test.model.movie.Movie;
 import com.example.test.model.movie.TrendingMovie;
 import com.example.test.viewmodel.MovieViewModel;
-import com.example.test.views.MovieDetailActivity;
+import com.example.test.views.movie.MovieDetailActivity;
 
 import java.util.List;
 

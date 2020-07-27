@@ -1,4 +1,4 @@
-package com.example.test.views;
+package com.example.test.views.movie;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;

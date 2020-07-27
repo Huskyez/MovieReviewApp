@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.test.api.ApiService;
 import com.example.test.api.ApiServiceFactory;
+import com.example.test.model.movie.AnticipatedMovie;
+import com.example.test.model.show.AnticipatedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.ShowDetails;
 import com.example.test.model.show.TrendingShow;
@@ -28,6 +30,9 @@ public class ShowRepository {
     private List<TrendingShow> trendingShows = new ArrayList<>();
     private MutableLiveData<List<TrendingShow>> trendingShowsLiveData = new MutableLiveData<>();
 
+    private List<AnticipatedShow> anticipatedShows = new ArrayList<>();
+    private MutableLiveData<List<AnticipatedShow>> anticipatedShowsLiveData = new MutableLiveData<>();
+
     private ShowDetails showDetails;
     private MutableLiveData<ShowDetails> showDetailsLiveData = new MutableLiveData<>();
 
@@ -36,6 +41,7 @@ public class ShowRepository {
         apiService = ApiServiceFactory.getService();
         trendingShowsLiveData.setValue(trendingShows);
         showDetailsLiveData.setValue(showDetails);
+        anticipatedShowsLiveData.setValue(anticipatedShows);
     }
 
     public static ShowRepository getInstance() {
@@ -125,4 +131,32 @@ public class ShowRepository {
     public LiveData<ShowDetails> getShowDetails() {
         return showDetailsLiveData;
     }
+
+    public void searchAnticipatedShows() {
+        Call<List<AnticipatedShow>> call = apiService.getAnticipatedShows();
+
+        call.enqueue(new Callback<List<AnticipatedShow>>() {
+            @Override
+            public void onResponse(Call<List<AnticipatedShow>> call, Response<List<AnticipatedShow>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println(response.errorBody());
+                }
+                assert response.body() != null;
+                anticipatedShows.clear();
+                anticipatedShows.addAll(response.body());
+                anticipatedShowsLiveData.setValue(anticipatedShows);
+            }
+
+            @Override
+            public void onFailure(Call<List<AnticipatedShow>> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public LiveData<List<AnticipatedShow>> getAnticipatedShows() {
+        return anticipatedShowsLiveData;
+    }
+
+
 }

@@ -1,26 +1,13 @@
 package com.example.test.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
-import com.example.test.R;
-import com.example.test.model.Image;
 import com.example.test.model.movie.Movie;
-import com.example.test.viewmodel.MovieViewModel;
-import com.example.test.views.MovieDetailActivity;
+import com.example.test.views.movie.MovieDetailActivity;
 
 import java.util.List;
 
-public class PopularMoviesRecyclerViewAdapter extends AbstractRecyclerViewAdapter<Movie>{
+public class MoviesRecyclerViewAdapter extends AbstractRecyclerViewAdapter<Movie>{
 
 //    private Context context;
 //    private MovieViewModel movieViewModel;
@@ -30,8 +17,8 @@ public class PopularMoviesRecyclerViewAdapter extends AbstractRecyclerViewAdapte
 //        this.movieViewModel = movieViewModel;
 //    }
 
-    public PopularMoviesRecyclerViewAdapter(Context context, List<Movie> movies) {
-        super(context, movies);
+    public MoviesRecyclerViewAdapter(Context context, List<Movie> movies) {
+        super(context, movies, "movie", MovieDetailActivity.class);
     }
 //
 //    @NonNull

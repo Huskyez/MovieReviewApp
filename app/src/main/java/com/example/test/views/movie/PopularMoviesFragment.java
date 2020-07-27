@@ -1,4 +1,4 @@
-package com.example.test.views;
+package com.example.test.views.movie;
 
 import android.os.Bundle;
 
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.test.R;
-import com.example.test.adapter.PopularMoviesRecyclerViewAdapter;
+import com.example.test.adapter.MoviesRecyclerViewAdapter;
 import com.example.test.viewmodel.MovieViewModel;
 import com.example.test.viewmodel.ViewModelFactory;
 
@@ -78,7 +78,7 @@ public class PopularMoviesFragment extends Fragment {
         TextView textView = view.findViewById(R.id.category_title);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         MovieViewModel movieViewModel = new ViewModelFactory().create(MovieViewModel.class);
-        PopularMoviesRecyclerViewAdapter adapter = new PopularMoviesRecyclerViewAdapter(this.getContext(), movieViewModel.getPopularMovies().getValue());
+        MoviesRecyclerViewAdapter adapter = new MoviesRecyclerViewAdapter(this.getContext(), movieViewModel.getPopularMovies().getValue());
 
         textView.setText(getString(R.string.popular));
 

@@ -2,6 +2,7 @@ package com.example.test.viewmodel;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.test.model.movie.AnticipatedMovie;
 import com.example.test.model.movie.Movie;
 import com.example.test.model.movie.TrendingMovie;
 import com.example.test.repo.ImageRepository;
@@ -33,12 +34,20 @@ public class MovieViewModel extends AbstractImageViewModel {
         movieRepository.searchPopularMovies();
     }
 
+    public LiveData<List<TrendingMovie>> getTrendingMovies() {
+        return movieRepository.getTrendingMovies();
+    }
+
     public void updateTrendingMovies() {
         movieRepository.searchTrendingMovies();
     }
 
-    public LiveData<List<TrendingMovie>> getTrendingMovies() {
-        return movieRepository.getTrendingMovies();
+    public LiveData<List<AnticipatedMovie>> getAnticipatedMovies() {
+        return movieRepository.getAnticipatedMovies();
+    }
+
+    public void updateAnticipatedMovies() {
+        movieRepository.searchAnticipatedMovies();
     }
 
     @Override

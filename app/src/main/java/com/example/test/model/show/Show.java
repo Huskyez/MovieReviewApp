@@ -1,28 +1,14 @@
 package com.example.test.model.show;
 
+import com.example.test.model.AbstractTitledMediaObject;
 import com.example.test.model.Ids;
 
-public class Show {
+public class Show extends AbstractTitledMediaObject {
 
-    private String title;
     private Integer year;
-    private Ids ids;
 
-    public Show() {
-    }
-
-    public Show(String title, Integer year, Ids ids) {
-        this.title = title;
-        this.year = year;
-        this.ids = ids;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public Show(Ids ids, String title) {
+        super(ids, title);
     }
 
     public Integer getYear() {
@@ -33,11 +19,4 @@ public class Show {
         this.year = year;
     }
 
-    public Ids getIds() {
-        return ids;
-    }
-
-    public void setIds(Ids ids) {
-        this.ids = ids;
-    }
 }

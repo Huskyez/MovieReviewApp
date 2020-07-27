@@ -3,27 +3,32 @@ package com.example.test.views;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.FrameMetrics;
+import android.view.MenuItem;
 
 import com.example.test.R;
 import com.example.test.adapter.SearchRecyclerViewAdapter;
+import com.example.test.adapter.SectionsPageAdapter;
 import com.example.test.viewmodel.SearchViewModel;
 import com.example.test.viewmodel.ViewModelFactory;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
 
     private SearchView searchView;
-    private RecyclerView recyclerView;
-    private SearchViewModel searchViewModel;
+    private ViewPager2 viewPager2;
+    private TabLayout tabLayout;
 
-
-//    @Override
-//    public int getMaxNumPictureInPictureActions() {
-//        return super.getMaxNumPictureInPictureActions();
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +38,50 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        searchView = findViewById(R.id.search_bar);
         // open the search view
+        searchView = findViewById(R.id.search_bar);
         searchView.setIconified(false);
 
-
-        recyclerView = findViewById(R.id.search_recycler_view);
-
-        searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
-
-        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(this, searchViewModel);
-        recyclerView.setAdapter(adapter);
+        viewPager2 = findViewById(R.id.view_pager);
+        tabLayout = findViewById(R.id.tab_layout);
 
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(SearchMovieFragment.newInstance());
+        fragments.add(SearchShowFragment.newInstance());
+
+
+
+        SectionsPageAdapter sectionsPageAdapter = new SectionsPageAdapter(this,  fragments);
+        viewPager2.setAdapter(sectionsPageAdapter);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                ((SearchFragment)fragments.get(tab.getPosition())).search(searchView.getQuery().toString());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        new TabLayoutMediator(tabLayout, viewPager2, ((tab, position) -> {
+            if (position == 0) {
+                tab.setText("MOVIES");
+            }
+            if (position == 1) {
+                tab.setText("TV SHOWS");
+            }
+        })).attach();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -57,15 +91,27 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                searchViewModel.search("movie", s);
+//                if (tabLayout.getSelectedTabPosition() == 0) {
+//                    fragments.get(0)
+//                }
+                ((SearchFragment)fragments.get(tabLayout.getSelectedTabPosition())).search(searchView.getQuery().toString());
                 return true;
             }
 
         });
 
-        searchViewModel.getSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
-        searchViewModel.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
+
     }
 
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
+    }
 
 }

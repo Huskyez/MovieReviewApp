@@ -40,6 +40,7 @@ public class MovieRepository {
         apiService = ApiServiceFactory.getService();
         trendingMoviesLiveData.setValue(trendingMovies);
         movieDetailsLiveData.setValue(movieDetails);
+        anticipatedMoviesLiveData.setValue(anticipatedMovies);
     }
 
     public static MovieRepository getInstance() {

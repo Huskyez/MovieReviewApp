@@ -1,4 +1,4 @@
-package com.example.test.views;
+package com.example.test.views.movie;
 
 import android.os.Bundle;
 
@@ -14,8 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.test.R;
-import com.example.test.adapter.PopularMoviesRecyclerViewAdapter;
-import com.example.test.adapter.TrendingMoviesRecyclerViewAdapter;
+import com.example.test.adapter.MoviesRecyclerViewAdapter;
 import com.example.test.viewmodel.MovieViewModel;
 import com.example.test.viewmodel.ViewModelFactory;
 
@@ -78,18 +77,15 @@ public class TrendingMoviesFragment extends Fragment {
         TextView textView = view.findViewById(R.id.category_title);
 
         MovieViewModel movieViewModel = new ViewModelFactory().create(MovieViewModel.class);
-//        PopularMoviesRecyclerViewAdapter adapter = new PopularMoviesRecyclerViewAdapter(this.getContext(), movieViewModel.getTrendingMovies().getValue().stream().map(x -> x.getMovie()).collect(Collectors.toList()));
-
-        TrendingMoviesRecyclerViewAdapter adapter = new TrendingMoviesRecyclerViewAdapter(this.getContext(), movieViewModel);
+        MoviesRecyclerViewAdapter adapter = new MoviesRecyclerViewAdapter(this.getContext(), movieViewModel.getTrendingMovies().getValue().stream().map(x -> x.getMovie()).collect(Collectors.toList()));
 
         textView.setText(getString(R.string.trending));
-
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         movieViewModel.updateTrendingMovies();
         movieViewModel.getTrendingMovies().observe(this.getViewLifecycleOwner(), movies -> {
-//            adapter.setMediaObjects(movieViewModel.getPopularMovies().getValue());
+            adapter.setMediaObjects(movieViewModel.getTrendingMovies().getValue().stream().map(x -> x.getMovie()).collect(Collectors.toList()));
             adapter.notifyDataSetChanged();
         });
         movieViewModel.getImageCache().observe(this.getViewLifecycleOwner(), map -> adapter.notifyDataSetChanged());

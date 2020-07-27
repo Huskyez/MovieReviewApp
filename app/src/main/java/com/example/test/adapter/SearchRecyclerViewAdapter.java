@@ -18,7 +18,7 @@ import com.example.test.model.Image;
 
 import com.example.test.model.SearchResult;
 import com.example.test.viewmodel.SearchViewModel;
-import com.example.test.views.MovieDetailActivity;
+import com.example.test.views.movie.MovieDetailActivity;
 
 import java.util.List;
 
@@ -27,30 +27,41 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
 
     private SearchViewModel searchViewModel;
+    private String type;
+    private Class detailClass;
     private Context context;
 
-    public SearchRecyclerViewAdapter(Context context, SearchViewModel searchViewModel) {
+    public SearchRecyclerViewAdapter(Context context, SearchViewModel searchViewModel, String type, Class detailClass) {
         this.searchViewModel = searchViewModel;
         this.context = context;
+        this.type = type;
+        this.detailClass = detailClass;
     }
 
     @NonNull
     @Override
     public SearchRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_searchitem, parent, false);
-        return new SearchRecyclerViewAdapter.ViewHolder(view);
+        return new SearchRecyclerViewAdapter.ViewHolder(view, detailClass);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SearchRecyclerViewAdapter.ViewHolder holder, int position) {
         List<SearchResult> searchResults = searchViewModel.getSearchResults().getValue();
         SearchResult searchResult = searchResults.get(position);
+        Integer tmdb_id;
 
-        Integer tmdb_id = searchResult.getMovie().getIds().getTmdb();
+        String searchResultType = searchResult.getType();
 
-        if (searchResults == null) {
-            return;
+        if (searchResultType.equals("movie")) {
+            tmdb_id = searchResult.getMovie().getIds().getTmdb();
+        } else {
+            tmdb_id = searchResult.getShow().getIds().getTmdb();
         }
+
+//        if (searchResults == null) {
+//            return;
+//        }
 
         String imageURI;
         Image image = searchViewModel.getImage(tmdb_id);
@@ -58,20 +69,37 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         if (image != null) {
             imageURI = "https://image.tmdb.org/t/p/w500" + image.getPath();
         } else {
-            searchViewModel.searchImage(tmdb_id, "movie");
+            searchViewModel.searchImage(tmdb_id, type);
             imageURI = "https://i.pinimg.com/originals/10/b2/f6/10b2f6d95195994fca386842dae53bb2.png";
         }
 
         Glide.with(context).asBitmap().load(imageURI).into(holder.ivPoster);
-        holder.tvMovieTitle.setText(searchResult.getMovie().getTitle());
+
+        if (searchResultType.equals("movie")) {
+            holder.tvMovieTitle.setText(searchResult.getMovie().getTitle());
+        } else {
+            holder.tvMovieTitle.setText(searchResult.getShow().getTitle());
+        }
+
+
         try {
-            holder.tvReleaseYear.setText(searchResult.getMovie().getYear().toString());
+            if (searchResultType.equals("movie")) {
+                holder.tvReleaseYear.setText(searchResult.getMovie().getYear().toString());
+            } else {
+                holder.tvReleaseYear.setText(searchResult.getShow().getYear().toString());
+            }
         } catch (NullPointerException e) {
             holder.tvReleaseYear.setText("UNKNOWN");
             Log.e("Error","Movie:" + searchResults.get(position).getMovie());
         }
-        holder.slug_id = searchResult.getMovie().getIds().getSlug();
-        holder.tmdb_id = searchResult.getMovie().getIds().getTmdb();
+
+        if (searchResultType.equals("movie")) {
+            holder.slug_id = searchResult.getMovie().getIds().getSlug();
+            holder.tmdb_id = searchResult.getMovie().getIds().getTmdb();
+        } else {
+            holder.slug_id = searchResult.getShow().getIds().getSlug();
+            holder.tmdb_id = searchResult.getShow().getIds().getTmdb();
+        }
     }
 
     @Override
@@ -90,7 +118,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
         private View layout;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, Class detailClass) {
             super(itemView);
             ivPoster = itemView.findViewById(R.id.image);
             tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
@@ -98,7 +126,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             layout = itemView.findViewById(R.id.search_item);
 
             layout.setOnClickListener(view -> {
-                Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
+                Intent intent = new Intent(view.getContext(), detailClass);
                 intent.putExtra("slug_id", slug_id);
                 intent.putExtra("tmdb_id", tmdb_id);
                 view.getContext().startActivity(intent);
