@@ -52,7 +52,7 @@ public class SearchShowFragment extends Fragment implements SearchFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        searchViewModel.getSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
+        searchViewModel.getShowSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
         searchViewModel.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
     }
 

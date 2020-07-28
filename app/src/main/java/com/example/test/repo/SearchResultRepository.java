@@ -20,12 +20,20 @@ public class SearchResultRepository {
 
     private ApiService apiService;
 
+    private MutableLiveData<List<SearchResult>> movieSearchResults;
+    private MutableLiveData<List<SearchResult>> showsSearchResults;
+
     private MutableLiveData<List<SearchResult>> searchResults;
 
     private SearchResultRepository() {
         apiService = ApiServiceFactory.getService();
         searchResults = new MutableLiveData<>();
         searchResults.setValue(new ArrayList<>());
+
+        movieSearchResults = new MutableLiveData<>();
+        showsSearchResults = new MutableLiveData<>();
+        movieSearchResults.setValue(new ArrayList<>());
+        showsSearchResults.setValue(new ArrayList<>());
     }
 
     public static SearchResultRepository getInstance() {
@@ -44,7 +52,15 @@ public class SearchResultRepository {
         call.enqueue(new Callback<List<SearchResult>>() {
             @Override
             public void onResponse(Call<List<SearchResult>> call, Response<List<SearchResult>> response) {
-                searchResults.setValue(response.body());
+
+                assert response.body() != null;
+//                searchResults.setValue(response.body());
+
+                if (response.body().get(0).getType().equals("movie")) {
+                    movieSearchResults.setValue(response.body());
+                } else {
+                    showsSearchResults.setValue(response.body());
+                }
             }
 
             @Override
@@ -58,4 +74,11 @@ public class SearchResultRepository {
         return searchResults;
     }
 
+    public LiveData<List<SearchResult>> getMovieSearchResults() {
+        return movieSearchResults;
+    }
+
+    public LiveData<List<SearchResult>> getShowSearchResults() {
+        return showsSearchResults;
+    }
 }

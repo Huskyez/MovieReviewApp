@@ -53,7 +53,7 @@ public class SearchMovieFragment extends Fragment implements SearchFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        searchViewModel.getSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
+        searchViewModel.getMovieSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
         searchViewModel.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
     }
 

@@ -22,8 +22,18 @@ public class SearchViewModel extends AbstractImageViewModel {
         this.searchResultRepository = searchResultRepository;
     }
 
+
+
     public LiveData<List<SearchResult>> getSearchResults() {
         return searchResultRepository.getSearchResults();
+    }
+
+    public LiveData<List<SearchResult>> getMovieSearchResults() {
+        return searchResultRepository.getMovieSearchResults();
+    }
+
+    public LiveData<List<SearchResult>> getShowSearchResults() {
+        return searchResultRepository.getShowSearchResults();
     }
 
     public void search(String type, String query) {
