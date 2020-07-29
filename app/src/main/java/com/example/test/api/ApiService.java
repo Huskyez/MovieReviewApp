@@ -10,6 +10,7 @@ import com.example.test.model.show.AnticipatedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.ShowDetails;
 import com.example.test.model.show.TrendingShow;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -53,5 +54,7 @@ public interface ApiService {
 
     @GET("shows/{slug_id}?extended=full")
     Call<ShowDetails> getShowDetails(@Path("slug_id") String slug_id);
+
+
 
 }

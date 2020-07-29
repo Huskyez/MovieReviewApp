@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder>{
+public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder> {
 
 
     private SearchViewModel searchViewModel;
