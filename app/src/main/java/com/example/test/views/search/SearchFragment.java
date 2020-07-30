@@ -1,4 +1,4 @@
-package com.example.test.views;
+package com.example.test.views.search;
 
 public interface SearchFragment {
 

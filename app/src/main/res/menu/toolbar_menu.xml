@@ -8,4 +8,9 @@
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Search"
         />
+    <item
+        android:id="@+id/logout_button"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_exit_to_app_24"
+        android:title="Sign Out"/>
 </menu>

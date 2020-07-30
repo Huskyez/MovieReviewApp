@@ -36,6 +36,7 @@ public class SearchViewModel extends AbstractImageViewModel {
         return searchResultRepository.getShowSearchResults();
     }
 
+
     public void search(String type, String query) {
         searchResultRepository.search(type, query);
     }

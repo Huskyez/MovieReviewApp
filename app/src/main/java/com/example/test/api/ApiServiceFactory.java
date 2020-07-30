@@ -9,13 +9,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiServiceFactory {
 
     //TODO: take this from a configuration file
-    private static final String BASE_URL = "https://api.trakt.tv/";
+    private static final String BASE_URL = TraktApiConfiguration.BASE_URL;
 
     private static final String API_VERSION_HEADER = "trakt-api-version";
     private static final String API_VERSION = "2";
 
     private static final String API_KEY_HEADER = "trakt-api-key";
-    private static final String API_KEY = "ad005b8c117cdeee58a1bdb7089ea31386cd489b21e14b19818c91511f12a086";
+    private static final String API_KEY = TraktApiConfiguration.CLIENT_ID;
 
     private static final String TMDB_API_KEY_HEADER = "api_key";
     private static final String TMDB_API_KEY = "366bb8cd1b82ca2f219a0f72303f68e9";

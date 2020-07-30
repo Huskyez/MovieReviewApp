@@ -7,6 +7,7 @@ import com.example.test.api.ApiService;
 import com.example.test.api.ApiServiceFactory;
 import com.example.test.model.movie.AnticipatedMovie;
 import com.example.test.model.show.AnticipatedShow;
+import com.example.test.model.show.RecommendedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.ShowDetails;
 import com.example.test.model.show.TrendingShow;
@@ -33,6 +34,9 @@ public class ShowRepository {
     private List<AnticipatedShow> anticipatedShows = new ArrayList<>();
     private MutableLiveData<List<AnticipatedShow>> anticipatedShowsLiveData = new MutableLiveData<>();
 
+    private List<RecommendedShow> recommendedShows = new ArrayList<>();
+    private MutableLiveData<List<RecommendedShow>> recommendedShowsLiveData = new MutableLiveData<>();
+
     private ShowDetails showDetails;
     private MutableLiveData<ShowDetails> showDetailsLiveData = new MutableLiveData<>();
 
@@ -42,6 +46,8 @@ public class ShowRepository {
         trendingShowsLiveData.setValue(trendingShows);
         showDetailsLiveData.setValue(showDetails);
         anticipatedShowsLiveData.setValue(anticipatedShows);
+        recommendedShowsLiveData.setValue(recommendedShows);
+
     }
 
     public static ShowRepository getInstance() {
@@ -158,5 +164,30 @@ public class ShowRepository {
         return anticipatedShowsLiveData;
     }
 
+    public void searchRecommendedShows(String period) {
 
+        Call<List<RecommendedShow>> call = apiService.getRecommendedShows(period);
+
+        call.enqueue(new Callback<List<RecommendedShow>>() {
+            @Override
+            public void onResponse(Call<List<RecommendedShow>> call, Response<List<RecommendedShow>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println(response.errorBody());
+                }
+                assert response.body() != null;
+                recommendedShows.clear();
+                recommendedShows.addAll(response.body());
+                recommendedShowsLiveData.setValue(recommendedShows);
+            }
+
+            @Override
+            public void onFailure(Call<List<RecommendedShow>> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public LiveData<List<RecommendedShow>> getRecommendedShows() {
+        return recommendedShowsLiveData;
+    }
 }

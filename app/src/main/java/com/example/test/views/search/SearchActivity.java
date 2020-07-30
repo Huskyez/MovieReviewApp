@@ -1,22 +1,16 @@
-package com.example.test.views;
+package com.example.test.views.search;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
-import android.view.FrameMetrics;
 import android.view.MenuItem;
 
 import com.example.test.R;
-import com.example.test.adapter.SearchRecyclerViewAdapter;
 import com.example.test.adapter.SectionsPageAdapter;
-import com.example.test.viewmodel.SearchViewModel;
-import com.example.test.viewmodel.ViewModelFactory;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

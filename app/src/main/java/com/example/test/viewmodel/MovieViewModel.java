@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.test.model.movie.AnticipatedMovie;
 import com.example.test.model.movie.Movie;
+import com.example.test.model.movie.RecommendedMovie;
 import com.example.test.model.movie.TrendingMovie;
 import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
@@ -48,6 +49,14 @@ public class MovieViewModel extends AbstractImageViewModel {
 
     public void updateAnticipatedMovies() {
         movieRepository.searchAnticipatedMovies();
+    }
+
+    public void updateRecommendedMovies(String period) {
+        movieRepository.searchRecommendedMovies(period);
+    }
+
+    public LiveData<List<RecommendedMovie>> getRecommendedMovies() {
+        return movieRepository.getRecommendedMovies();
     }
 
     @Override

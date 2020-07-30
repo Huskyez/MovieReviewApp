@@ -9,6 +9,7 @@ import com.example.test.repo.ImageRepository;
 import com.example.test.repo.MovieRepository;
 import com.example.test.repo.SearchResultRepository;
 import com.example.test.repo.ShowRepository;
+import com.example.test.repo.UserRepository;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
@@ -19,14 +20,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         MovieRepository movieRepository = MovieRepository.getInstance();
         SearchResultRepository searchResultRepository = SearchResultRepository.getInstance();
         ShowRepository showRepository = ShowRepository.getInstance();
+        UserRepository userRepository = UserRepository.getInstance();
+
 
         if (modelClass == MovieViewModel.class) {
-
             return (T) new MovieViewModel(movieRepository, imageRepository);
         }
 
         if (modelClass == SearchViewModel.class) {
-
             return (T) new SearchViewModel(searchResultRepository, imageRepository);
         }
 
@@ -42,6 +43,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new ShowDetailsViewModel(showRepository, imageRepository);
         }
 
+        if (modelClass == ProfileViewModel.class) {
+            return (T) new ProfileViewModel(userRepository);
+        }
 
         return null;
     }

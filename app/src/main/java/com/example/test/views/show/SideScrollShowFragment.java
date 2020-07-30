@@ -16,6 +16,7 @@ import com.example.test.R;
 import com.example.test.adapter.MoviesRecyclerViewAdapter;
 import com.example.test.adapter.ShowsRecyclerViewAdapter;
 import com.example.test.model.show.AnticipatedShow;
+import com.example.test.model.show.RecommendedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.TrendingShow;
 import com.example.test.viewmodel.MovieViewModel;
@@ -36,16 +37,9 @@ public class SideScrollShowFragment extends Fragment {
 
     }
 
-//    private void setTitle(String title) {
-//        this.categoryTitle = title;
-//    }
-
     public static SideScrollShowFragment newInstance(String title) {
         SideScrollShowFragment sideScrollShowFragment = new SideScrollShowFragment();
         sideScrollShowFragment.categoryTitle = title;
-//        Bundle args = new Bundle();
-//        args.putString("title", title);
-//        sideScrollShowFragment.setArguments(args);
         return sideScrollShowFragment;
     }
 
@@ -53,10 +47,6 @@ public class SideScrollShowFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        categoryTitle = "UNKNOWN";
-//        if (getArguments() != null) {
-//            categoryTitle = savedInstanceState.getString("title");
-//        }
     }
 
     @Override
@@ -69,6 +59,12 @@ public class SideScrollShowFragment extends Fragment {
     private List<Show> getList(String category, ShowViewModel showViewModel) {
         List<Show> showList = new ArrayList<>();
 
+        if (category.equals("Recommended")) {
+            showViewModel.updateRecommendedShows("weekly");
+            showList = showViewModel.getRecommendedShows().getValue().stream().map(RecommendedShow::getShow).collect(Collectors.toList());
+            return showList;
+        }
+
         if (category.equals("Popular")) {
             showViewModel.updatePopularShows();
             showList = showViewModel.getPopularShows().getValue();
@@ -76,12 +72,12 @@ public class SideScrollShowFragment extends Fragment {
         }
         if (category.equals("Trending")) {
             showViewModel.updateTrendingShows();
-            showList = showViewModel.getTrendingShows().getValue().stream().map(x -> x.getShow()).collect(Collectors.toList());
+            showList = showViewModel.getTrendingShows().getValue().stream().map(TrendingShow::getShow).collect(Collectors.toList());
             return showList;
         }
         if (category.equals("Anticipated")) {
             showViewModel.updateAnticipatedShows();
-            showList = showViewModel.getAnticipatedShows().getValue().stream().map(x -> x.getShow()).collect(Collectors.toList());
+            showList = showViewModel.getAnticipatedShows().getValue().stream().map(AnticipatedShow::getShow).collect(Collectors.toList());
             return showList;
         }
 
@@ -89,6 +85,15 @@ public class SideScrollShowFragment extends Fragment {
     }
 
     private void setListener(String category, ShowViewModel showViewModel, ShowsRecyclerViewAdapter adapter) {
+
+        if (category.equals("Recommended")) {
+            showViewModel.getRecommendedShows().observe(this.getViewLifecycleOwner(), shows -> {
+                adapter.setMediaObjects(shows.stream().map(RecommendedShow::getShow).collect(Collectors.toList()));
+                adapter.notifyDataSetChanged();
+            });
+            return;
+        }
+
         if (category.equals("Popular")) {
             showViewModel.getPopularShows().observe(this.getViewLifecycleOwner(), shows -> {
                 adapter.setMediaObjects(shows);

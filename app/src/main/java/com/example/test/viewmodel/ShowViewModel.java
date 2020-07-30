@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData;
 
 import com.example.test.model.movie.AnticipatedMovie;
 import com.example.test.model.movie.Movie;
+import com.example.test.model.movie.RecommendedMovie;
 import com.example.test.model.movie.TrendingMovie;
 import com.example.test.model.show.AnticipatedShow;
+import com.example.test.model.show.RecommendedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.TrendingShow;
 import com.example.test.repo.ImageRepository;
@@ -44,5 +46,13 @@ public class ShowViewModel extends AbstractImageViewModel {
 
     public void updateAnticipatedShows() {
         showRepository.searchAnticipatedShows();
+    }
+
+    public void updateRecommendedShows(String period) {
+        showRepository.searchRecommendedShows(period);
+    }
+
+    public LiveData<List<RecommendedShow>> getRecommendedShows() {
+        return showRepository.getRecommendedShows();
     }
 }

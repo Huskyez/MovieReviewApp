@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.test.R;
 import com.example.test.adapter.MoviesRecyclerViewAdapter;
+import com.example.test.model.movie.AnticipatedMovie;
 import com.example.test.viewmodel.MovieViewModel;
 import com.example.test.viewmodel.ViewModelFactory;
 
@@ -25,28 +26,14 @@ public class AnticipatedMoviesFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment TrendingMoviesFragment.
-     */
     public static AnticipatedMoviesFragment newInstance() {
         AnticipatedMoviesFragment fragment = new AnticipatedMoviesFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
     }
 
     @Override
@@ -64,7 +51,7 @@ public class AnticipatedMoviesFragment extends Fragment {
         TextView textView = view.findViewById(R.id.category_title);
 
         MovieViewModel movieViewModel = new ViewModelFactory().create(MovieViewModel.class);
-        MoviesRecyclerViewAdapter adapter = new MoviesRecyclerViewAdapter(this.getContext(), movieViewModel.getAnticipatedMovies().getValue().stream().map(x -> x.getMovie()).collect(Collectors.toList()));
+        MoviesRecyclerViewAdapter adapter = new MoviesRecyclerViewAdapter(this.getContext(), movieViewModel.getAnticipatedMovies().getValue().stream().map(AnticipatedMovie::getMovie).collect(Collectors.toList()));
 
         textView.setText("Anticipated");
         recyclerView.setAdapter(adapter);
@@ -72,7 +59,7 @@ public class AnticipatedMoviesFragment extends Fragment {
 
         movieViewModel.updateAnticipatedMovies();
         movieViewModel.getAnticipatedMovies().observe(this.getViewLifecycleOwner(), movies -> {
-            adapter.setMediaObjects(movieViewModel.getAnticipatedMovies().getValue().stream().map(x -> x.getMovie()).collect(Collectors.toList()));
+            adapter.setMediaObjects(movieViewModel.getAnticipatedMovies().getValue().stream().map(AnticipatedMovie::getMovie).collect(Collectors.toList()));
             adapter.notifyDataSetChanged();
         });
         movieViewModel.getImageCache().observe(this.getViewLifecycleOwner(), map -> adapter.notifyDataSetChanged());

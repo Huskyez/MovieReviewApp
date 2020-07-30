@@ -22,12 +22,6 @@ import java.util.List;
  */
 public class MoviePageFragment extends Fragment {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-
-//    private String mParam1;
-//    private String mParam2;
 
     private List<Fragment> fragmentList;
 
@@ -39,17 +33,9 @@ public class MoviePageFragment extends Fragment {
         this.fragmentList = fragmentList;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment MoviePageFragment.
-     */
+
     public static MoviePageFragment newInstance() {
         MoviePageFragment fragment = new MoviePageFragment();
-//        fragment.setFragmentList(fragments);
-//        Bundle args = new Bundle();
-//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -71,17 +57,16 @@ public class MoviePageFragment extends Fragment {
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-        //TODO: pass a list of fragments instead of having them hardcoded
-        //TODO: (another one) these fragments should have the same layout
-        // -> refactor it (same adapter)
-        TrendingMoviesFragment trendingMoviesFragment = TrendingMoviesFragment.newInstance();
-        PopularMoviesFragment popularMoviesFragment = PopularMoviesFragment.newInstance();
-        AnticipatedMoviesFragment anticipatedMoviesFragment = AnticipatedMoviesFragment.newInstance();
+        SideScrollMovieFragment recommendedFragment = SideScrollMovieFragment.newInstance("Recommended");
+        SideScrollMovieFragment popularFragment = SideScrollMovieFragment.newInstance("Popular");
+        SideScrollMovieFragment trendingFragment = SideScrollMovieFragment.newInstance("Trending");
+        SideScrollMovieFragment anticipatedFragment = SideScrollMovieFragment.newInstance("Anticipated");
 
 
-        transaction.add(R.id.fragment_container, popularMoviesFragment);
-        transaction.add(R.id.fragment_container, trendingMoviesFragment);
-        transaction.add(R.id.fragment_container, anticipatedMoviesFragment);
+        transaction.add(R.id.fragment_container, recommendedFragment);
+        transaction.add(R.id.fragment_container, popularFragment);
+        transaction.add(R.id.fragment_container, trendingFragment);
+        transaction.add(R.id.fragment_container, anticipatedFragment);
         transaction.commit();
     }
 

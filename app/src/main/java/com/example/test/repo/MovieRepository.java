@@ -8,6 +8,7 @@ import com.example.test.api.ApiServiceFactory;
 import com.example.test.model.movie.AnticipatedMovie;
 import com.example.test.model.movie.Movie;
 import com.example.test.model.movie.MovieDetails;
+import com.example.test.model.movie.RecommendedMovie;
 import com.example.test.model.movie.TrendingMovie;
 
 import java.util.ArrayList;
@@ -32,8 +33,13 @@ public class MovieRepository {
     private List<AnticipatedMovie> anticipatedMovies = new ArrayList<>();
     private MutableLiveData<List<AnticipatedMovie>> anticipatedMoviesLiveData = new MutableLiveData<>();
 
+    private List<RecommendedMovie> recommendedMovies = new ArrayList<>();
+    private MutableLiveData<List<RecommendedMovie>> recommendedMoviesLiveData = new MutableLiveData<>();
+
     private MovieDetails movieDetails;
     private MutableLiveData<MovieDetails> movieDetailsLiveData = new MutableLiveData<>();
+
+
 
 
     private MovieRepository() {
@@ -41,6 +47,7 @@ public class MovieRepository {
         trendingMoviesLiveData.setValue(trendingMovies);
         movieDetailsLiveData.setValue(movieDetails);
         anticipatedMoviesLiveData.setValue(anticipatedMovies);
+        recommendedMoviesLiveData.setValue(recommendedMovies);
     }
 
     public static MovieRepository getInstance() {
@@ -154,5 +161,29 @@ public class MovieRepository {
 
     public LiveData<List<AnticipatedMovie>> getAnticipatedMovies() {
         return anticipatedMoviesLiveData;
+    }
+
+    public void searchRecommendedMovies(String period) {
+
+        Call<List<RecommendedMovie>> call = apiService.getRecommendedMovies(period);
+
+        call.enqueue(new Callback<List<RecommendedMovie>>() {
+            @Override
+            public void onResponse(Call<List<RecommendedMovie>> call, Response<List<RecommendedMovie>> response) {
+                assert response.body() != null;
+                recommendedMovies.clear();
+                recommendedMovies.addAll(response.body());
+                recommendedMoviesLiveData.setValue(recommendedMovies);
+            }
+
+            @Override
+            public void onFailure(Call<List<RecommendedMovie>> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public LiveData<List<RecommendedMovie>> getRecommendedMovies() {
+        return recommendedMoviesLiveData;
     }
 }

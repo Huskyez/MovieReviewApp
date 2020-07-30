@@ -51,10 +51,12 @@ public class ShowPageFragment extends Fragment {
         //TODO: (another one) these fragments should have the same layout
         // -> refactor it (same adapter)
 
+        SideScrollShowFragment recommendedFragment = SideScrollShowFragment.newInstance("Recommended");
         SideScrollShowFragment popularFragment = SideScrollShowFragment.newInstance("Popular");
         SideScrollShowFragment trendingFragment = SideScrollShowFragment.newInstance("Trending");
         SideScrollShowFragment anticipatedFragment = SideScrollShowFragment.newInstance("Anticipated");
 
+        transaction.add(R.id.fragment_container, recommendedFragment);
         transaction.add(R.id.fragment_container, popularFragment);
         transaction.add(R.id.fragment_container, trendingFragment);
         transaction.add(R.id.fragment_container, anticipatedFragment);

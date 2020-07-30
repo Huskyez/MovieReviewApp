@@ -1,4 +1,4 @@
-package com.example.test.views;
+package com.example.test.views.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

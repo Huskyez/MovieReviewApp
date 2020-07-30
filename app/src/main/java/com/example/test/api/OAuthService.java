@@ -1,5 +1,10 @@
 package com.example.test.api;
 
+import com.example.test.model.token.AccessToken;
+import com.example.test.model.token.AccessTokenRequestBody;
+import com.example.test.model.token.RefreshTokenRequestBody;
+import com.example.test.model.token.RevokeAccessTokenBody;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -8,18 +13,15 @@ import retrofit2.http.POST;
 
 public interface OAuthService {
 
-    //OAuth authorization (redirects to trakt.tv)
-    @GET("https://trakt.tv/oauth/authorize?response_type=code&client_id=ad005b8c117cdeee58a1bdb7089ea31386cd489b21e14b19818c91511f12a086&redirect_uri=http://trakt.tv")
-    Call<ResponseBody> OAuthAuthorization();
 
-//    @POST("/oauth/token")
-//    Observable<OAuth2AccessToken> grantNewAccessToken(@Body AccessTokenRequestBody body);
-//
-//    @POST("/oauth/token")
-//    Observable<OAuth2AccessToken> refreshAccessToken(@Body RefreshTokenRequestBody body);
-//
-//    @POST("/oauth/revoke")
-//    Observable<Void> revokeAccessToken(@Body RevokeAccessTokenBody body);
+    @POST("/oauth/token")
+    Call<AccessToken> grantNewAccessToken(@Body AccessTokenRequestBody body);
+
+    @POST("/oauth/token")
+    Call<AccessToken> refreshAccessToken(@Body RefreshTokenRequestBody body);
+
+    @POST("/oauth/revoke")
+    Call<Void> revokeAccessToken(@Body RevokeAccessTokenBody body);
 
 
 }
