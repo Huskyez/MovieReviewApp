@@ -65,8 +65,6 @@ public class OAuth {
                 TraktApiConfiguration.REDIRECT_URI,
                 AUTH_GRANT_TYPE);
 
-        //TODO: maybe just do this synchronously
-
         Call<AccessToken> call = oAuthService.grantNewAccessToken(body);
 
         call.enqueue(new Callback<AccessToken>() {
@@ -131,12 +129,6 @@ public class OAuth {
                 t.getStackTrace();
             }
         });
-//        try {
-//            call.execute();
-//            clearSharedPreferences();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
 

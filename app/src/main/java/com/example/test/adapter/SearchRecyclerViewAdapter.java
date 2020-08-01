@@ -73,7 +73,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         Image image = searchViewModel.getImage(tmdb_id);
 
         if (image != null) {
-            imageURI = "https://image.tmdb.org/t/p/w500" + image.getPath();
+            imageURI = "https://image.tmdb.org/t/p/original" + image.getPath();
         } else {
 
             if (type.equals("movie")) {

@@ -41,9 +41,7 @@ public class ProfileFragment extends Fragment {
 
         profileViewModel = new ViewModelFactory().create(ProfileViewModel.class);
 
-        String access_token = "Bearer ";
-        access_token += getActivity().getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
-
+        String access_token = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
         Log.d("Token", access_token);
         profileViewModel.updateUserSettings(access_token);
     }
@@ -66,6 +64,7 @@ public class ProfileFragment extends Fragment {
 
         profileViewModel.getUserSettings().observe(getViewLifecycleOwner(), settings -> {
             if (settings != null) {
+                Log.d("SLUG", settings.getUser().getIds().getSlug());
                 profileViewModel.updateUserStats(settings.getUser().getIds().getSlug());
                 username.setText(settings.getUser().getUsername());
                 Glide.with(view).asBitmap().load(settings.getUser().getImages().getAvatar().getFull()).into(avatar);

@@ -1,13 +1,16 @@
 package com.example.test.api;
 
 import com.example.test.model.ImageSearchResult;
+import com.example.test.model.WatchlistItem;
 import com.example.test.model.movie.AnticipatedMovie;
+import com.example.test.model.movie.CollectionMovie;
 import com.example.test.model.movie.Movie;
 import com.example.test.model.movie.MovieDetails;
 import com.example.test.model.SearchResult;
 import com.example.test.model.movie.RecommendedMovie;
 import com.example.test.model.movie.TrendingMovie;
 import com.example.test.model.show.AnticipatedShow;
+import com.example.test.model.show.CollectionShow;
 import com.example.test.model.show.RecommendedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.ShowDetails;
@@ -29,10 +32,10 @@ public interface ApiService {
 
 
     //MOVIES
-    @GET("movies/trending")
+    @GET("movies/trending?limit=30")
     Call<List<TrendingMovie>> getTrendingMovies();
 
-    @GET("movies/popular")
+    @GET("movies/popular?limit=30")
     Call<List<Movie>> getPopularMovies();
 
     @GET("movies/anticipated")
@@ -42,10 +45,10 @@ public interface ApiService {
     Call<List<RecommendedMovie>> getRecommendedMovies(@Path("period") String period);
 
     //SHOWS
-    @GET("shows/trending")
+    @GET("shows/trending?limit=30")
     Call<List<TrendingShow>> getTrendingShows();
 
-    @GET("shows/popular")
+    @GET("shows/popular?limit=30")
     Call<List<Show>> getPopularShows();
 
     @GET("shows/anticipated")
@@ -79,5 +82,21 @@ public interface ApiService {
 
     @GET("users/{id}/stats")
     Call<UserStats> getUserStats(@Path("id") String id);
+
+
+
+    @GET("sync/collection/movies")
+    Call<List<CollectionMovie>> getMovieCollection(@Header("Authorization") String access_token);
+
+    @GET("sync/collection/shows")
+    Call<List<CollectionShow>> getShowCollection(@Header("Authorization") String access_token);
+
+//    @GET("users/watchlist/{type}")
+//    Call<List<WatchlistItem>> getWatchlist(@Header("Authorization") String access_token, @Path("type") String type);
+    @GET("sync/watchlist")
+    Call<List<WatchlistItem>> getWatchlist(@Header("Authorization") String access_token);
+
+    @GET("users/recommendations/{type}")
+    Call<List<WatchlistItem>> getRecommendations(@Header("Authorization") String access_token, @Path("type") String type);
 
 }

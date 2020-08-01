@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -16,39 +17,42 @@ import com.example.test.R;
 import com.example.test.model.AbstractTitledMediaObject;
 import com.example.test.model.Image;
 import com.example.test.repo.ImageRepository;
-import com.example.test.views.movie.MovieDetailActivity;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public abstract class AbstractRecyclerViewAdapter<T extends AbstractTitledMediaObject> extends RecyclerView.Adapter<AbstractRecyclerViewAdapter.ViewHolder> {
+public class CollectionsRecyclerViewAdapter extends RecyclerView.Adapter<CollectionsRecyclerViewAdapter.ViewHolder> {
+
 
     private Context context;
-    private List<T> mediaObjects;
     private String type;
+    private List<AbstractTitledMediaObject> list;
+//    private Function<Object, AbstractTitledMediaObject> getFunction;
     private Class detailClass;
 
-    public AbstractRecyclerViewAdapter(Context context, List<T> mediaObjects, String type, Class detailClass){
+    public CollectionsRecyclerViewAdapter(Context context, String type, Class detailClass) {
         this.context = context;
-        this.mediaObjects = mediaObjects;
         this.type = type;
         this.detailClass = detailClass;
     }
 
-    public void setMediaObjects(List<T> mediaObjects) {
-        this.mediaObjects = mediaObjects;
+    public void setList(List<AbstractTitledMediaObject> list) {
+        this.list = list;
     }
 
     @NonNull
     @Override
-    public AbstractRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false);
-        return new AbstractRecyclerViewAdapter.ViewHolder(view, detailClass);
+        return new ViewHolder(view, detailClass);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AbstractRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        T mediaObject = mediaObjects.get(position);
+        AbstractTitledMediaObject mediaObject = list.get(position);
+
         Integer tmdb_id = mediaObject.getIds().getTmdb();
         String imageURI;
 
@@ -66,13 +70,13 @@ public abstract class AbstractRecyclerViewAdapter<T extends AbstractTitledMediaO
         holder.textView.setText(mediaObject.getTitle());
         holder.slug_id = mediaObject.getIds().getSlug();
         holder.tmdb_id = mediaObject.getIds().getTmdb();
-    }
+
+     }
 
     @Override
     public int getItemCount() {
-        return mediaObjects == null ? 0 : mediaObjects.size();
+        return list == null ? 0 : list.size();
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -96,6 +100,4 @@ public abstract class AbstractRecyclerViewAdapter<T extends AbstractTitledMediaO
             });
         }
     }
-
-
 }

@@ -39,7 +39,7 @@ public class SearchShowFragment extends Fragment implements SearchFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_search_recycler_view, container, false);
+        return inflater.inflate(R.layout.layout_recycler_view, container, false);
     }
 
     @Override

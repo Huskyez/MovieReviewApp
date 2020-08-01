@@ -7,7 +7,9 @@ import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.Fragment;
 
 import com.example.test.R;
+import com.example.test.model.user.UserSettings;
 import com.example.test.repo.OAuth;
+import com.example.test.repo.UserRepository;
 import com.example.test.views.login.LoginActivity;
 import com.example.test.views.movie.MoviePageFragment;
 import com.example.test.views.movie.PopularMoviesFragment;
@@ -25,17 +27,40 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean dialogResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+//        String accessToken = "Bearer ";
+//        accessToken += getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
+//        UserRepository.getInstance().searchUserSettings(accessToken);
+//
+//        UserRepository.getInstance().getUserSettings().observe(this, settings -> {
+//
+//            if (settings == null) {
+//                return;
+//            }
+//
+//            if (settings.getUser() == null) {
+//                String token = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
+//                OAuth oAuth = new OAuth(getApplicationContext());
+//                oAuth.revokeToken(token);
+//                UserRepository.getInstance().getUserSettings().removeObservers(this);
+//                startLoginActivity();
+//            }
+//        });
+
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Fragment fragment = null;
             switch (item.getItemId()) {
+                case R.id.nav_home:
+                    fragment = HomeFragment.newInstance();
+                    break;
                 case R.id.nav_movie:
                     fragment = MoviePageFragment.newInstance();
                     break;
@@ -72,45 +97,19 @@ public class MainActivity extends AppCompatActivity {
                 OAuth oAuth = new OAuth(getApplicationContext());
                 String access_token = getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
                 oAuth.revokeToken(access_token);
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                finish();
-                startActivity(intent);
+                startLoginActivity();
             });
-            builder.setNegativeButton("No", (dialogInterface, i) -> {
-                dialogResponse = false;
-                dialogInterface.cancel();
-            });
+            builder.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.cancel());
             builder.show();
 
         });
 
     }
 
-    private void showAlertDialog() {
-
+    private void startLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        startActivity(intent);
     }
-
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.toolbar_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        if (item.getItemId() == R.id.logout_button) {
-//            OAuth oAuth = new OAuth(getApplicationContext());
-//            String access_token = getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
-//            oAuth.revokeToken(access_token);
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            finish();
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }

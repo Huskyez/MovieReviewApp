@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
@@ -48,16 +50,15 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-//        OAuth oAuth = new OAuth();
         setContentView(R.layout.activity_login);
         Button loginButton = findViewById(R.id.btnLogin);
 
         loginButton.setOnClickListener(view -> {
             WebView webView = findViewById(R.id.web_view);
             webView.setWebChromeClient(new WebChromeClient());
-            webView.clearCache(true);
-            webView.clearHistory();
+//            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
             webView.loadUrl("https://trakt.tv/oauth/authorize?response_type=code&client_id=" + TraktApiConfiguration.CLIENT_ID + "&redirect_uri=" + TraktApiConfiguration.REDIRECT_URI);
+//            webView.loadUrl("https://www.google.com");
             loginButton.setEnabled(false);
         });
 

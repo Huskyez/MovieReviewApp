@@ -5,4 +5,5 @@
     <string name="popular">Popular</string>
     <string name="trending">Trending</string>
     <string name="shared_pref_file">moviereviewapp_shared_pref</string>
+    <string name="edit">Edit</string>
 </resources>

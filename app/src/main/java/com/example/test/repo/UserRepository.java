@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.test.api.ApiService;
 import com.example.test.api.ApiServiceFactory;
 import com.example.test.model.stats.UserStats;
+import com.example.test.model.user.User;
 import com.example.test.model.user.UserSettings;
 
 import retrofit2.Call;
@@ -39,7 +40,9 @@ public class UserRepository {
 
     public void searchUserSettings(String access_token) {
 
-        Call<UserSettings> call = apiService.getUserSettings(access_token);
+
+        String toSend = "Bearer " + access_token;
+        Call<UserSettings> call = apiService.getUserSettings(toSend);
 
         call.enqueue(new Callback<UserSettings>() {
             @Override
@@ -47,6 +50,10 @@ public class UserRepository {
                 if (response.isSuccessful()) {
                     userSettings = response.body();
                     userSettingsMutableLiveData.setValue(userSettings);
+                } else {
+                    UserSettings settings = new UserSettings();
+                    settings.setUser(null);
+                    userSettingsMutableLiveData.setValue(settings);
                 }
             }
 
@@ -88,8 +95,8 @@ public class UserRepository {
     public void clearData() {
         userSettings = null;
         userStats = null;
-        userSettingsMutableLiveData.setValue(userSettings);
-        userStatsMutableLiveData.setValue(userStats);
+        userSettingsMutableLiveData.setValue(null);
+        userStatsMutableLiveData.setValue(null);
     }
 
 }
