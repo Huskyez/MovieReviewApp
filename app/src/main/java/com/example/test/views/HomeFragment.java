@@ -17,7 +17,10 @@ import android.view.ViewGroup;
 import com.example.test.R;
 import com.example.test.model.WatchlistItem;
 import com.example.test.model.movie.CollectionMovie;
+import com.example.test.model.movie.RecommendedMovie;
+import com.example.test.model.movie.WatchedMovie;
 import com.example.test.model.show.CollectionShow;
+import com.example.test.model.show.WatchedShow;
 import com.example.test.repo.UserListsRepository;
 
 import java.util.Collection;
@@ -66,20 +69,32 @@ public class HomeFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         String access_token = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
-        UserListsRepository userListsRepository = UserListsRepository.getInstance();
+        UserListsRepository userListsRepository = UserListsRepository.getInstance(access_token);
 
-        CollectionsFragment<CollectionMovie> movieCollectionsFragment = CollectionsFragment.newInstance("Movie Collection", "movie", userListsRepository.getMovieCollection(), () -> userListsRepository.searchMovieCollection(access_token), CollectionMovie::getMovie);
+        CollectionsFragment<CollectionMovie> movieCollectionsFragment = CollectionsFragment.newInstance("Movie Collection", "movie", userListsRepository.getMovieCollection(), userListsRepository::searchMovieCollection, CollectionMovie::getMovie);
 
-        CollectionsFragment<CollectionShow> showCollectionsFragment = CollectionsFragment.newInstance("Show Collection", "tv", userListsRepository.getShowCollection(), () -> userListsRepository.searchShowCollection(access_token), CollectionShow::getShow);
+        CollectionsFragment<CollectionShow> showCollectionsFragment = CollectionsFragment.newInstance("Show Collection", "tv", userListsRepository.getShowCollection(), userListsRepository::searchShowCollection, CollectionShow::getShow);
 
-        CollectionsFragment<WatchlistItem> movieWatchlistFragment = CollectionsFragment.newInstance("Movie Watchlist", "movie", userListsRepository.getWatchlist(), () -> userListsRepository.searchWatchlist(access_token, "movies"), x -> x.getType().equals("movie") ? x.getMovie() : null);
+        CollectionsFragment<WatchlistItem> movieWatchlistFragment = CollectionsFragment.newInstance("Movie Watchlist", "movie", userListsRepository.getWatchlist(), userListsRepository::searchWatchlist, WatchlistItem::getMovie);
 
-        CollectionsFragment<WatchlistItem> showWatchlistFragment = CollectionsFragment.newInstance("Show Watchlist", "tv", userListsRepository.getWatchlist(), () -> userListsRepository.searchWatchlist(access_token, "shows"), x -> x.getType().equals("show") ? x.getShow() : null);
+        CollectionsFragment<WatchlistItem> showWatchlistFragment = CollectionsFragment.newInstance("Show Watchlist", "tv", userListsRepository.getWatchlist(), userListsRepository::searchWatchlist, WatchlistItem::getShow);
+
+        CollectionsFragment<WatchlistItem> recommendedMovieFragment = CollectionsFragment.newInstance("Recommended Movies", "movie", userListsRepository.getRecommendations(), userListsRepository::searchRecommendations, WatchlistItem::getMovie);
+
+        CollectionsFragment<WatchlistItem> recommendedShowsFragment = CollectionsFragment.newInstance("Recommended Shows", "tv", userListsRepository.getRecommendations(), userListsRepository::searchRecommendations, WatchlistItem::getShow);
+
+        CollectionsFragment<WatchedMovie> watchedMovieFragment = CollectionsFragment.newInstance("Watched Movies", "movie", userListsRepository.getWatchedMovies(), userListsRepository::searchWatchedMovies, WatchedMovie::getMovie);
+        CollectionsFragment<WatchedShow> watchedShowFragment = CollectionsFragment.newInstance("Watched Shows", "tv", userListsRepository.getWatchedShows(), userListsRepository::searchWatchedShows, WatchedShow::getShow);
 
         transaction.add(R.id.container, movieCollectionsFragment);
         transaction.add(R.id.container, showCollectionsFragment);
         transaction.add(R.id.container, movieWatchlistFragment);
         transaction.add(R.id.container, showWatchlistFragment);
+        transaction.add(R.id.container, recommendedMovieFragment);
+        transaction.add(R.id.container, recommendedShowsFragment);
+        transaction.add(R.id.container, watchedMovieFragment);
+        transaction.add(R.id.container, watchedShowFragment);
+
         transaction.commit();
     }
 }

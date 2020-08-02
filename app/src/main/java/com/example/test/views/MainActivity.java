@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, HomeFragment.newInstance()).commit();
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Fragment fragment = null;

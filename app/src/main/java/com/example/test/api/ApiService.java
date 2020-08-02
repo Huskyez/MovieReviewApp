@@ -9,12 +9,14 @@ import com.example.test.model.movie.MovieDetails;
 import com.example.test.model.SearchResult;
 import com.example.test.model.movie.RecommendedMovie;
 import com.example.test.model.movie.TrendingMovie;
+import com.example.test.model.movie.WatchedMovie;
 import com.example.test.model.show.AnticipatedShow;
 import com.example.test.model.show.CollectionShow;
 import com.example.test.model.show.RecommendedShow;
 import com.example.test.model.show.Show;
 import com.example.test.model.show.ShowDetails;
 import com.example.test.model.show.TrendingShow;
+import com.example.test.model.show.WatchedShow;
 import com.example.test.model.stats.UserStats;
 import com.example.test.model.user.UserSettings;
 import com.google.gson.JsonObject;
@@ -96,7 +98,13 @@ public interface ApiService {
     @GET("sync/watchlist")
     Call<List<WatchlistItem>> getWatchlist(@Header("Authorization") String access_token);
 
-    @GET("users/recommendations/{type}")
-    Call<List<WatchlistItem>> getRecommendations(@Header("Authorization") String access_token, @Path("type") String type);
+    @GET("sync/recommendations/{type}")
+    Call<List<WatchlistItem>> getRecommendations(@Header("Authorization") String access_token);
+
+    @GET("sync/watched/movies")
+    Call<List<WatchedMovie>> getWatchedMovies(@Header("Authorization") String access_token);
+
+    @GET("sync/watched/shows")
+    Call<List<WatchedShow>> getWatchedShows(@Header("Authorization") String access_token);
 
 }

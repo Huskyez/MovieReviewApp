@@ -80,66 +80,6 @@ public class CollectionsFragment<T> extends Fragment {
     }
 
 
-//    private List<Show> getList(String category, ShowViewModel showViewModel) {
-//        List<Show> showList = new ArrayList<>();
-//
-//        if (category.equals("Recommended")) {
-//            showViewModel.updateRecommendedShows("weekly");
-//            showList = showViewModel.getRecommendedShows().getValue().stream().map(RecommendedShow::getShow).collect(Collectors.toList());
-//            return showList;
-//        }
-//
-//        if (category.equals("Popular")) {
-//            showViewModel.updatePopularShows();
-//            showList = showViewModel.getPopularShows().getValue();
-//            return showList;
-//        }
-//        if (category.equals("Trending")) {
-//            showViewModel.updateTrendingShows();
-//            showList = showViewModel.getTrendingShows().getValue().stream().map(TrendingShow::getShow).collect(Collectors.toList());
-//            return showList;
-//        }
-//        if (category.equals("Anticipated")) {
-//            showViewModel.updateAnticipatedShows();
-//            showList = showViewModel.getAnticipatedShows().getValue().stream().map(AnticipatedShow::getShow).collect(Collectors.toList());
-//            return showList;
-//        }
-//
-//        return showList;
-//    }
-//
-//    private void setListener(String category, ShowViewModel showViewModel, ShowsRecyclerViewAdapter adapter) {
-//
-//        if (category.equals("Recommended")) {
-//            showViewModel.getRecommendedShows().observe(this.getViewLifecycleOwner(), shows -> {
-//                adapter.setMediaObjects(shows.stream().map(RecommendedShow::getShow).collect(Collectors.toList()));
-//                adapter.notifyDataSetChanged();
-//            });
-//            return;
-//        }
-//
-//        if (category.equals("Popular")) {
-//            showViewModel.getPopularShows().observe(this.getViewLifecycleOwner(), shows -> {
-//                adapter.setMediaObjects(shows);
-//                adapter.notifyDataSetChanged();
-//            });
-//            return;
-//        }
-//        if (category.equals("Trending")) {
-//            showViewModel.getTrendingShows().observe(this.getViewLifecycleOwner(), shows -> {
-//                adapter.setMediaObjects(shows.stream().map(TrendingShow::getShow).collect(Collectors.toList()));
-//                adapter.notifyDataSetChanged();
-//            });
-//            return;
-//        }
-//        if (category.equals("Anticipated")) {
-//            showViewModel.getAnticipatedShows().observe(this.getViewLifecycleOwner(), shows -> {
-//                adapter.setMediaObjects(shows.stream().map(AnticipatedShow::getShow).collect(Collectors.toList()));
-//                adapter.notifyDataSetChanged();
-//            });
-//            return;
-//        }
-//    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -150,7 +90,7 @@ public class CollectionsFragment<T> extends Fragment {
         TextView title = view.findViewById(R.id.tv_title);
         TextView edit = view.findViewById(R.id.tv_edit);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         CollectionsRecyclerViewAdapter adapter = new CollectionsRecyclerViewAdapter(getContext(), type, type.equals("movie") ? MovieDetailActivity.class : ShowDetailActivity.class);
         recyclerView.setAdapter(adapter);
@@ -159,7 +99,7 @@ public class CollectionsFragment<T> extends Fragment {
         updateFunction.run();
         observable.observe(this, list -> {
             if (list != null) {
-                adapter.setList(list.stream().map(getFunction).collect(Collectors.toList()));
+                adapter.setList(list.stream().map(getFunction).filter(Objects::nonNull).collect(Collectors.toList()));
                 adapter.notifyDataSetChanged();
             }
         });
