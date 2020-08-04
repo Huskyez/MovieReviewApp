@@ -6,6 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".views.show.ShowDetailActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="32dp"
+        app:fabSize="normal"
+        android:src="@drawable/ic_baseline_add_24"
+        tools:ignore="RtlHardcoded" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/collection_button"
+        android:src="@drawable/ic_baseline_format_list_bulleted_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/add_button"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="16dp"
+        app:fabSize="mini"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toLeftOf="@id/collection_button"
+        app:layout_constraintTop_toTopOf="@id/collection_button"
+        app:layout_constraintBottom_toBottomOf="@id/collection_button"
+        android:text="collection"
+        android:id="@+id/tv_collection"
+        android:background="@drawable/text_fab_bg"
+        android:textColor="@color/lightGray"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/watchlist_button"
+        android:src="@drawable/ic_baseline_watch_later_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/collection_button"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="16dp"
+        app:fabSize="mini"
+
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toLeftOf="@id/watchlist_button"
+        app:layout_constraintTop_toTopOf="@id/watchlist_button"
+        app:layout_constraintBottom_toBottomOf="@id/watchlist_button"
+        android:text="watchlist"
+        android:id="@+id/tv_watchlist"
+        android:background="@drawable/text_fab_bg"
+        android:textColor="@color/lightGray"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,5 +134,5 @@
             />
 
     </LinearLayout>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

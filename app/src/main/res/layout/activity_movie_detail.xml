@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,73 +7,180 @@
     tools:context=".views.movie.MovieDetailActivity">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-        <ImageView
-            android:layout_width="180dp"
-            android:layout_height="240dp"
-            android:src="@mipmap/ic_launcher"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tv_movie_title"
-            android:id="@+id/image"
-            android:contentDescription="TODO" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image"
-            android:text="TITLE"
-            android:textSize="40sp"
-            android:id="@+id/tv_movie_title"
-            />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="32dp"
+        app:fabSize="normal"
+        android:src="@drawable/ic_baseline_add_24"
+        tools:ignore="RtlHardcoded" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
-            android:text="YEAR"
-            android:textSize="30sp"
-            android:id="@+id/tv_year"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TAGLINE"
-            android:textSize="30sp"
-            android:id="@+id/tv_tagline"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SUMMARY"
-            android:textSize="20sp"
-            android:id="@+id/tv_summary"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RUNTIME"
-            android:textSize="20sp"
-            android:id="@+id/tv_runtime"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RATING"
-            android:textSize="30sp"
-            android:id="@+id/tv_rating"
-            />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/collection_button"
+        android:src="@drawable/ic_baseline_format_list_bulleted_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/add_button"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="16dp"
+        app:fabSize="mini"
+        />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toLeftOf="@id/collection_button"
+        app:layout_constraintTop_toTopOf="@id/collection_button"
+        app:layout_constraintBottom_toBottomOf="@id/collection_button"
+        android:text="collection"
+        android:id="@+id/tv_collection"
+        android:background="@drawable/text_fab_bg"
+        android:textColor="@color/lightGray"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/watchlist_button"
+        android:src="@drawable/ic_baseline_watch_later_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/collection_button"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="16dp"
+        app:fabSize="mini"
+
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toLeftOf="@id/watchlist_button"
+        app:layout_constraintTop_toTopOf="@id/watchlist_button"
+        app:layout_constraintBottom_toBottomOf="@id/watchlist_button"
+        android:text="watchlist"
+        android:id="@+id/tv_watchlist"
+        android:background="@drawable/text_fab_bg"
+        android:textColor="@color/lightGray"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/watched_button"
+        android:src="@drawable/ic_baseline_history_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/watchlist_button"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="16dp"
+        app:fabSize="mini"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toLeftOf="@id/watched_button"
+        app:layout_constraintTop_toTopOf="@id/watched_button"
+        app:layout_constraintBottom_toBottomOf="@id/watched_button"
+        android:text="watched"
+        android:id="@+id/tv_watched"
+        android:background="@drawable/text_fab_bg"
+        android:textColor="@color/lightGray"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:layout_width="180dp"
+                android:layout_height="240dp"
+                android:src="@mipmap/ic_launcher"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tv_movie_title"
+                android:id="@+id/image"
+                android:contentDescription="TODO" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image"
+                android:text="TITLE"
+                android:textSize="40sp"
+                android:id="@+id/tv_movie_title"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
+                android:text="YEAR"
+                android:textSize="30sp"
+                android:id="@+id/tv_year"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_year"
+                android:text="TAGLINE"
+                android:textSize="30sp"
+                android:id="@+id/tv_tagline"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_tagline"
+                android:text="SUMMARY"
+                android:textSize="20sp"
+                android:id="@+id/tv_summary"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_summary"
+                android:text="RUNTIME"
+                android:textSize="20sp"
+                android:id="@+id/tv_runtime"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_runtime"
+                android:text="RATING"
+                android:textSize="30sp"
+                android:id="@+id/tv_rating"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

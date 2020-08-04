@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.test">
+    package="com.huskyez.test">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,18 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".views.MainActivity"></activity>
-        <activity android:name=".views.login.LoginActivity">
+        <activity android:name="com.huskyez.test.views.MainActivity" />
+        <activity android:name="com.huskyez.test.views.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.movie.MovieDetailActivity" />
-        <activity android:name=".views.show.ShowDetailActivity" />
-        <activity android:name=".views.search.SearchActivity" />
-        <activity android:name=".views.login.HandleLoginActivity">
+        <activity android:name="com.huskyez.test.views.movie.MovieDetailActivity" />
+        <activity android:name="com.huskyez.test.views.show.ShowDetailActivity" />
+        <activity android:name="com.huskyez.test.views.search.SearchActivity" />
+        <activity android:name="com.huskyez.test.views.login.HandleLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -33,7 +33,7 @@
                     android:scheme="app" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.movie.TrendingMoviesActivity" />
+        <activity android:name="com.huskyez.test.views.movie.TrendingMoviesActivity" />
     </application>
 
 </manifest>
