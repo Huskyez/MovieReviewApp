@@ -32,9 +32,22 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
         app:layout_constraintHeight_default="spread"
-        app:layout_constraintWidth_default="wrap"
+        android:fillViewport="true"
         />
-
+    
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toStartOf="@id/bottom_navigation_view"
+        app:layout_constraintStart_toEndOf="@id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
+        app:layout_constraintHeight_default="spread"
+        />
+    
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
@@ -45,6 +58,6 @@
         app:menu="@menu/bottom_navigation_menu"
         android:background="?android:attr/windowBackground"
         />
-
+    
 
 </androidx.constraintlayout.widget.ConstraintLayout>

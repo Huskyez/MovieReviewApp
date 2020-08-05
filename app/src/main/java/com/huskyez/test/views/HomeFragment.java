@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment {
         CollectionsFragment<WatchlistItem> recommendedShowsFragment = CollectionsFragment.newInstance("Recommended Shows", "tv", userListsRepository.getRecommendations(), userListsRepository::searchRecommendations, WatchlistItem::getShow);
 
         CollectionsFragment<WatchedMovie> watchedMovieFragment = CollectionsFragment.newInstance("Watched Movies", "movie", userListsRepository.getWatchedMovies(), userListsRepository::searchWatchedMovies, WatchedMovie::getMovie);
+
         CollectionsFragment<WatchedShow> watchedShowFragment = CollectionsFragment.newInstance("Watched Shows", "tv", userListsRepository.getWatchedShows(), userListsRepository::searchWatchedShows, WatchedShow::getShow);
 
         transaction.add(R.id.container, movieCollectionsFragment);

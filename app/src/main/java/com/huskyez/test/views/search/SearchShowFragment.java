@@ -1,6 +1,7 @@
 package com.huskyez.test.views.search;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ public class SearchShowFragment extends Fragment implements SearchFragment {
 
     private SearchViewModel searchViewModel;
 
+    private String pastQuery;
+
     public SearchShowFragment() {
 
     }
@@ -33,12 +36,14 @@ public class SearchShowFragment extends Fragment implements SearchFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("FRAGMENT", "On Create");
         searchViewModel = new ViewModelFactory().create(SearchViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("FRAGMENT", "On Create View");
         return inflater.inflate(R.layout.layout_recycler_view, container, false);
     }
 
@@ -54,11 +59,20 @@ public class SearchShowFragment extends Fragment implements SearchFragment {
 
         searchViewModel.getShowSearchResults().observe(this, searchResults -> adapter.notifyDataSetChanged());
         searchViewModel.getImageCache().observe(this, map -> adapter.notifyDataSetChanged());
+
+        if (pastQuery != null) {
+            searchViewModel.search("show", pastQuery);
+            pastQuery = null;
+        }
     }
 
     @Override
     public void search(String query) {
-        if (searchViewModel != null)
+
+        if (searchViewModel != null) {
             searchViewModel.search("show", query);
+        } else {
+            pastQuery = query;
+        }
     }
 }

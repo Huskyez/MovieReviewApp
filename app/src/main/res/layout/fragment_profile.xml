@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.ProfileActivity">
+    android:id="@+id/constraint_layout"
+    >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/constraint_layout">
 
         <ImageView
             android:layout_margin="20dp"
@@ -46,6 +43,7 @@
             android:text="WATCH TIME"
             android:id="@+id/tv_watch_time"
             />
+        
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +55,25 @@
             android:id="@+id/tv_ratings"
             />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.github.mikephil.charting.charts.BarChart
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_ratings"
+            app:layout_constraintBottom_toTopOf="@id/random"
+            app:layout_constraintHeight_default="spread"
+            android:id="@+id/bar_chart"
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bar_chart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/app_name"
+            android:id="@+id/random"/>
 
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

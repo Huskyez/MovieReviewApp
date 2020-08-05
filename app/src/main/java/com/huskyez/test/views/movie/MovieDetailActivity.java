@@ -8,10 +8,15 @@ import com.huskyez.test.R;
 import com.huskyez.test.model.common.WatchlistItem;
 import com.huskyez.test.model.image.Image;
 import com.huskyez.test.model.movie.CollectionMovie;
+import com.huskyez.test.model.movie.HistoryMovie;
 import com.huskyez.test.model.movie.Movie;
 import com.huskyez.test.model.movie.MovieDetails;
+import com.huskyez.test.model.movie.RatedMovie;
+import com.huskyez.test.model.movie.WatchedMovie;
 import com.huskyez.test.model.sync.CollectionPostBody;
+import com.huskyez.test.model.sync.HistoryPostBody;
 import com.huskyez.test.model.sync.PostMediaObject;
+import com.huskyez.test.model.sync.RatingPostBody;
 import com.huskyez.test.model.sync.WatchlistPostBody;
 import com.huskyez.test.repo.UserListsRepository;
 import com.huskyez.test.viewmodel.MovieDetailsViewModel;
@@ -23,7 +28,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,6 +62,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView tvRuntime;
     private TextView tvRating;
 
+    private RatingBar ratingBar;
+
     private FloatingActionButton addButton;
     private FloatingActionButton collectionButton;
     private FloatingActionButton watchlistButton;
@@ -74,33 +84,37 @@ public class MovieDetailActivity extends AppCompatActivity {
     private UserListsRepository userListsRepository;
     private List<CollectionMovie> collectionMovies;
     private List<WatchlistItem> watchlist;
+    private List<WatchedMovie> history;
     private int collectionPosition;
     private int watchlistPosition;
+    private int historyPosition;
 
     private View.OnClickListener addToCollection;
     private View.OnClickListener removeFromCollection;
     private View.OnClickListener addToWatchlist;
     private View.OnClickListener removeFromWatchlist;
+    private View.OnClickListener addToHistory;
+    private View.OnClickListener removeFromHistory;
 
     private void closeFabs() {
         collectionButton.startAnimation(fabClose);
         watchlistButton.startAnimation(fabClose);
-//                watchedButton.startAnimation(fabClose);
+        watchedButton.startAnimation(fabClose);
         tvCollection.setVisibility(View.INVISIBLE);
         tvWatchlist.setVisibility(View.INVISIBLE);
+        tvWatched.setVisibility(View.INVISIBLE);
         isOpen = false;
-//                tvWatched.setVisibility(View.INVISIBLE);
     }
 
     private void openFabs() {
         collectionButton.startAnimation(fabOpen);
         watchlistButton.startAnimation(fabOpen);
-//                watchedButton.startAnimation(fabOpen);
+        watchedButton.startAnimation(fabOpen);
 
         tvCollection.setVisibility(View.VISIBLE);
         tvWatchlist.setVisibility(View.VISIBLE);
+        tvWatched.setVisibility(View.VISIBLE);
         isOpen = true;
-//                tvWatched.setVisibility(View.VISIBLE);
     }
 
     private void setFloatingActionButtons() {
@@ -144,6 +158,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvRuntime = findViewById(R.id.tv_runtime);
         tvRating = findViewById(R.id.tv_rating);
 
+        LinearLayout genreLayout = findViewById(R.id.genre_container);
+
         movieDetailsViewModel.searchMovieDetails(slug_id);
         movieDetailsViewModel.getMovieDetails().observe(this, movieDetails -> {
             if (movieDetails == null) {
@@ -157,8 +173,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             tvYear.setText(movieDetails.getReleased());
             tvTagline.setText(movieDetails.getTagline());
             tvSummary.setText(movieDetails.getOverview());
-            tvRuntime.setText(movieDetails.getRuntime().toString());
-            tvRating.setText(movieDetails.getRating().toString());
+            tvRuntime.setText("Duration: " + movieDetails.getRuntime().toString() + " minutes");
+            tvRating.setText("Rating: " + movieDetails.getRating().toString());
+
+            for (String genre : movieDetails.getGenres()) {
+                TextView tvGenre = new TextView(this);
+                tvGenre.setBackground(getDrawable(R.drawable.text_genre_bg));
+                tvGenre.setTextColor(getColor(R.color.lightGray));
+                tvGenre.setText(genre);
+                genreLayout.addView(tvGenre);
+            }
         });
 
         movieDetailsViewModel.getImageCache().observe(this, map -> {
@@ -176,6 +200,78 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void setRatingBar() {
+
+        ratingBar = findViewById(R.id.rating_bar);
+
+        userListsRepository.searchRatings();
+
+        userListsRepository.getRatings().observe(this, ratings -> {
+            Integer rating = 0;
+            int position = ratings.stream().filter(x -> x.getType().equals("movie")).map(x -> x.getMovie().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
+            if (position != -1) {
+                rating = ratings.get(position).getRating();
+            }
+            ratingBar.setRating(rating / 2.0f);
+        });
+
+        ratingBar.setOnRatingBarChangeListener((ratinpgBar, v, b) -> {
+            // check if user changed the rating bar
+            if (!b) {
+                return;
+            }
+
+            int rating = (int) (2.0f * v);
+
+            String toShow = "Your rating: ";
+            switch (rating) {
+                case 0:
+                    toShow += "No rating!";
+                    break;
+                case 1:
+                    toShow += "Weak Sauce :(";
+                    break;
+                case 2:
+                    toShow += "Terrible";
+                    break;
+                case 3:
+                    toShow += "Bad";
+                    break;
+                case 4:
+                    toShow += "Poor";
+                    break;
+                    case 5:
+                    toShow += "Meh";
+                    break;
+                    case 6:
+                    toShow += "Fair";
+                    break;
+                    case 7:
+                    toShow += "Good";
+                    break;
+                    case 8:
+                    toShow += "Great";
+                    break;
+                case 9:
+                    toShow += "Superb";
+                    break;
+                case 10:
+                    toShow += "Totally Ninja!";
+                    break;
+            }
+            Toast.makeText(this, toShow, Toast.LENGTH_SHORT).show();
+
+            String now = dateFormat.format(new Date());
+
+            RatedMovie ratedMovie = new RatedMovie(movieDetails.getTitle(), movieDetails.getYear(), movieDetails.getIds(), now, rating);
+            if (rating == 0) {
+                userListsRepository.removeRating(new RatingPostBody(new ArrayList<>(Collections.singletonList(ratedMovie)), null));
+            } else {
+                userListsRepository.addRating(new RatingPostBody(new ArrayList<>(Collections.singletonList(ratedMovie)), null));
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,16 +282,20 @@ public class MovieDetailActivity extends AppCompatActivity {
         tmdb_id = getIntent().getIntExtra("tmdb_id", 0);
         slug_id = getIntent().getStringExtra("slug_id");
 
-        setFloatingActionButtons();
-        setDetailPage();
-
+        userListsRepository = UserListsRepository.getInstance(getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null));
         dateFormat.setTimeZone(timeZone);
 
-        //TODO: change listener according to situation
-        userListsRepository = UserListsRepository.getInstance(getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null));
+        setFloatingActionButtons();
+        setDetailPage();
+        setRatingBar();
 
         collectionMovies = userListsRepository.getMovieCollection().getValue();
         watchlist = userListsRepository.getWatchlist().getValue().stream().filter(x -> x.getType().equals("movie")).collect(Collectors.toList());
+        history = userListsRepository.getWatchedMovies().getValue();
+
+        userListsRepository.getResponse().observe(this, response -> {
+            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+        });
 
         userListsRepository.getMovieCollection().observe(this, collection -> {
             collectionMovies = collection;
@@ -205,9 +305,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             this.watchlist = watchlist.stream().filter(x -> x.getType().equals("movie")).collect(Collectors.toList());
             watchlistPosition = this.watchlist.stream().map(x -> x.getMovie().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
         });
+        userListsRepository.getWatchedMovies().observe(this, history -> {
+            this.history = history;
+            historyPosition = this.history.stream().map(x -> x.getMovie().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
+        });
+
 
         collectionPosition = collectionMovies.stream().map(x -> x.getMovie().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
         watchlistPosition = watchlist.stream().map(x -> x.getMovie().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
+        historyPosition = history.stream().map(x -> x.getMovie().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
+
 
         addToCollection = view -> {
             String now = dateFormat.format(new Date());
@@ -238,7 +345,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         };
 
         addToWatchlist = view -> {
-            Movie toAdd = new Movie(movieDetails.getIds(), movieDetails.getTitle());
+            Movie toAdd = new Movie(movieDetails.getTitle(), movieDetails.getYear(), movieDetails.getIds());
             userListsRepository.addToWatchlist(new WatchlistPostBody(new ArrayList<>(Collections.singletonList(toAdd)), null));
             watchlist.add(new WatchlistItem(null, null, "movie", toAdd, null));
             tvWatchlist.setText("Remove from Watchlist");
@@ -246,6 +353,27 @@ public class MovieDetailActivity extends AppCompatActivity {
             closeFabs();
         };
 
+        addToHistory = view -> {
+            WatchedMovie toAdd = new WatchedMovie(null, null, null, new Movie(movieDetails.getTitle(), movieDetails.getYear(), movieDetails.getIds()));
+            history.add(toAdd);
+            String now = dateFormat.format(new Date());
+            HistoryMovie historyMovie = new HistoryMovie(movieDetails.getTitle(), movieDetails.getYear(), movieDetails.getIds(), now);
+            userListsRepository.addToHistory(new HistoryPostBody(new ArrayList<>(Collections.singletonList(historyMovie)), null, null, null));
+            tvWatched.setText("Remove from History");
+            watchedButton.setOnClickListener(removeFromHistory);
+            closeFabs();
+        };
+
+
+        removeFromHistory = view -> {
+            WatchedMovie watchedMovie = history.get(historyPosition);
+            HistoryMovie toRemove = new HistoryMovie(watchedMovie.getMovie().getTitle(), watchedMovie.getMovie().getYear(), watchedMovie.getMovie().getIds(), null);
+            userListsRepository.removeFromHistory(new HistoryPostBody(new ArrayList<>(Collections.singletonList(toRemove)), null, null, null));
+            history.remove(historyPosition);
+            tvWatched.setText("Add to History");
+            watchedButton.setOnClickListener(addToHistory);
+            closeFabs();
+        };
 //        UserListsRepository userListsRepository = UserListsRepository.getInstance(getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null));
 //
 //        List<CollectionMovie> collectionMovies = userListsRepository.getMovieCollection().getValue();
@@ -259,13 +387,20 @@ public class MovieDetailActivity extends AppCompatActivity {
             collectionButton.setOnClickListener(addToCollection);
         }
 
-
         if (watchlistPosition != -1) {
             tvWatchlist.setText("Remove from Watchlist");
             watchlistButton.setOnClickListener(removeFromWatchlist);
         } else {
             tvWatchlist.setText("Add to Watchlist");
             watchlistButton.setOnClickListener(addToWatchlist);
+        }
+
+        if (historyPosition != -1) {
+            tvWatched.setText("Remove from History");
+            watchedButton.setOnClickListener(removeFromHistory);
+        } else {
+            tvWatched.setText("Add to History");
+            watchedButton.setOnClickListener(addToHistory);
         }
     }
 }

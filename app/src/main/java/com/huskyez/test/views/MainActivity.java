@@ -17,6 +17,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        // TODO: check for valid access_token
 //        String accessToken = "Bearer ";
 //        accessToken += getApplicationContext().getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
 //        UserRepository.getInstance().searchUserSettings(accessToken);
@@ -82,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
         ActionMenuItemView logoutItem = findViewById(R.id.logout_button);
 
+
+        WebView webView = findViewById(R.id.web_view);
+        webView.setVisibility(View.INVISIBLE);
+
+
         logoutItem.setOnClickListener(view -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -92,7 +101,18 @@ public class MainActivity extends AppCompatActivity {
                 OAuth oAuth = new OAuth(getApplicationContext());
                 String access_token = getSharedPreferences(getString(R.string.shared_pref_file), Context.MODE_PRIVATE).getString("access_token", null);
                 oAuth.revokeToken(access_token);
-                startLoginActivity();
+//                oAuth.logout();
+                webView.setVisibility(View.VISIBLE);
+                webView.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        startLoginActivity();
+                    }
+                });
+                webView.loadUrl("https://trakt.tv/logout");
+
+//                startLoginActivity();
             });
             builder.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.cancel());
             builder.show();

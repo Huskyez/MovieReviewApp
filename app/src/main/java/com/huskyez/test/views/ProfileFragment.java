@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.huskyez.test.R;
 import com.huskyez.test.viewmodel.ProfileViewModel;
 import com.huskyez.test.viewmodel.ViewModelFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProfileFragment extends Fragment {
 
@@ -58,6 +69,8 @@ public class ProfileFragment extends Fragment {
         TextView watchTime = view.findViewById(R.id.tv_watch_time);
         TextView ratings = view.findViewById(R.id.tv_ratings);
 
+        BarChart barChart = view.findViewById(R.id.bar_chart);
+
         profileViewModel.getUserSettings().observe(getViewLifecycleOwner(), settings -> {
             if (settings != null) {
                 Log.d("SLUG", settings.getUser().getIds().getSlug());
@@ -71,8 +84,23 @@ public class ProfileFragment extends Fragment {
         profileViewModel.getUserStats().observe(getViewLifecycleOwner(), stats -> {
             if (stats != null) {
                 int totalWatchTime = stats.getMovies().getMinutes() + stats.getEpisodes().getMinutes();
-                watchTime.setText(totalWatchTime + "");
-                ratings.setText(stats.getRatings().getDistribution().get("10") + "");
+                watchTime.setText("Total Watchtime: " + totalWatchTime + " minutes");
+//                ratings.setText(stats.getRatings().getDistribution().get("10") + "");
+
+                Map<String, Integer> distribution = stats.getRatings().getDistribution();
+                List<BarEntry> barEntries = new ArrayList<>();
+                for (String key : distribution.keySet().stream().sorted().collect(Collectors.toList())) {
+                    barEntries.add(new BarEntry(Integer.parseInt(key), distribution.get(key)));
+                }
+                BarDataSet barDataSet = new BarDataSet(barEntries, "Rating Distribution");
+                barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+                barDataSet.setValueTextColor(Color.BLACK);
+                barDataSet.setValueTextSize(16f);
+
+                BarData barData = new BarData(barDataSet);
+                barChart.setFitBars(true);
+                barChart.setData(barData);
+                barChart.animateY(2000);
             }
         });
 

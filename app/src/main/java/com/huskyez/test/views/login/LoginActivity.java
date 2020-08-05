@@ -54,8 +54,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Button loginButton = findViewById(R.id.btnLogin);
 
+        //TODO: add CSRF token to request
         loginButton.setOnClickListener(view -> {
             WebView webView = findViewById(R.id.web_view);
+            webView.getSettings().setSupportMultipleWindows(true);
+
             webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -69,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                     return false;
                 }
             });
+            webView.setWebChromeClient(new WebChromeClient());
             webView.loadUrl("https://trakt.tv/oauth/authorize?response_type=code&client_id=" + TraktApiConfiguration.CLIENT_ID + "&redirect_uri=" + TraktApiConfiguration.REDIRECT_URI);
             loginButton.setEnabled(false);
         });

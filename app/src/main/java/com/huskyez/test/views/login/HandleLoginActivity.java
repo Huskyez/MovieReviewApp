@@ -23,9 +23,15 @@ public class HandleLoginActivity extends AppCompatActivity {
         OAuth oAuth = new OAuth(this.getApplicationContext());
         oAuth.exchangeCodeForAccessToken(code);
 
-        Intent intent = new Intent(this.getApplicationContext(), MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(intent);
+        oAuth.isTokenSaved().observe(this, saved -> {
+            if (saved != null) {
+                if (saved) {
+                    Intent intent = new Intent(this.getApplicationContext(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
     }
 }

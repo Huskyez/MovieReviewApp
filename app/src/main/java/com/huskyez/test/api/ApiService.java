@@ -1,5 +1,8 @@
 package com.huskyez.test.api;
 
+import com.huskyez.test.model.common.RatedItem;
+import com.huskyez.test.model.show.Episode;
+import com.huskyez.test.model.show.Season;
 import com.huskyez.test.model.sync.CollectionPostBody;
 import com.huskyez.test.model.image.ImageSearchResult;
 import com.huskyez.test.model.common.WatchlistItem;
@@ -19,6 +22,8 @@ import com.huskyez.test.model.show.ShowDetails;
 import com.huskyez.test.model.show.TrendingShow;
 import com.huskyez.test.model.show.WatchedShow;
 import com.huskyez.test.model.stats.UserStats;
+import com.huskyez.test.model.sync.HistoryPostBody;
+import com.huskyez.test.model.sync.RatingPostBody;
 import com.huskyez.test.model.sync.WatchlistPostBody;
 import com.huskyez.test.model.user.UserSettings;
 
@@ -62,6 +67,12 @@ public interface ApiService {
     @GET("shows/recommended/{period}")
     Call<List<RecommendedShow>> getRecommendedShows(@Path("period") String period);
 
+    @GET("shows/{slug_id}/seasons")
+    Call<List<Season>> getSeasons(@Path("slug_id") String slug_id);
+
+    @GET("shows/{slug_id}/seasons/{season}")
+    Call<List<Episode>> getEpisodes(@Path("slug_id") String slug_id, @Path("season") Integer season);
+
     //// ------------------ IMAGES -------------------------------------------------------------------------------------------
     @GET("https://api.themoviedb.org/3/{type}/{tmdb_id}/images")
     Call<ImageSearchResult> searchImages(@Path("type") String type, @Path("tmdb_id") Integer tmdb_id, @Query("api_key") String apiKey);
@@ -102,18 +113,6 @@ public interface ApiService {
     @POST("sync/collection/remove")
     Call<Void> removeFromCollection(@Header("Authorization") String access_token, @Body CollectionPostBody collection);
 
-//    @POST("sync/collection")
-//    Call<Void> addMovieToCollection(@Header("Authorization") String access_token, @Body List<CollectionMovie> movies);
-//
-//    @POST("sync/collection")
-//    Call<Void> addShowToCollection(@Header("Authorization") String access_token, @Body List<CollectionShow> shows);
-
-//    @POST("sync/collection/remove")
-//    Call<Void> removeMovieFromCollection(@Header("Authorization") String access_token, @Body List<CollectionMovie> movies);
-//
-//    @POST("sync/collection/remove")
-//    Call<Void> removeShowFromCollection(@Header("Authorization") String access_token, @Body List<CollectionShow> movies);
-
 
     // ------------------ USER WATCHLIST -------------------------------------------------------------------------------------------
     @GET("sync/watchlist")
@@ -121,11 +120,6 @@ public interface ApiService {
 
     @POST("sync/watchlist")
     Call<Void> addToWatchlist(@Header("Authorization") String access_token, @Body WatchlistPostBody watchlist);
-//    @POST("sync/watchlist")
-//    Call<Void> addMovieToWatchlist(@Header("Authorization") String access_token, @Body List<Movie> movies);
-//
-//    @POST("sync/watchlist")
-//    Call<Void> addShowToWatchlist(@Header("Authorization") String access_token, @Body List<Show> shows);
 
     @POST("sync/watchlist/remove")
     Call<Void> removeFromWatchlist(@Header("Authorization") String access_token, @Body WatchlistPostBody watchlist);
@@ -135,12 +129,29 @@ public interface ApiService {
     Call<List<WatchlistItem>> getRecommendations(@Header("Authorization") String access_token);
 
 
-    // ------------------ USER WATCHED -------------------------------------------------------------------------------------------
+    // ------------------ USER HISTORY -------------------------------------------------------------------------------------------
     @GET("sync/watched/movies")
     Call<List<WatchedMovie>> getWatchedMovies(@Header("Authorization") String access_token);
 
     @GET("sync/watched/shows")
     Call<List<WatchedShow>> getWatchedShows(@Header("Authorization") String access_token);
+
+    @POST("sync/history")
+    Call<Void> addToHistory (@Header("Authorization") String access_token, @Body HistoryPostBody history);
+
+    @POST("sync/history/remove")
+    Call<Void> removeFromHistory (@Header("Authorization") String access_token, @Body HistoryPostBody history);
+
+
+    // ------------------ USER RATINGS -------------------------------------------------------------------------------------------
+    @GET("sync/ratings")
+    Call<List<RatedItem>> getRatings(@Header("Authorization") String access_token);
+
+    @POST("sync/ratings")
+    Call<Void> addRating(@Header("Authorization") String access_token, @Body RatingPostBody ratings);
+
+    @POST("sync/ratings/remove")
+    Call<Void> removeRating(@Header("Authorization") String access_token, @Body RatingPostBody ratings);
 
 
 }

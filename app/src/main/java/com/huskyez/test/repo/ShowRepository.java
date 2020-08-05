@@ -6,7 +6,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.huskyez.test.api.ApiService;
 import com.huskyez.test.api.ApiServiceFactory;
 import com.huskyez.test.model.show.AnticipatedShow;
+import com.huskyez.test.model.show.Episode;
 import com.huskyez.test.model.show.RecommendedShow;
+import com.huskyez.test.model.show.Season;
 import com.huskyez.test.model.show.Show;
 import com.huskyez.test.model.show.ShowDetails;
 import com.huskyez.test.model.show.TrendingShow;
@@ -38,6 +40,13 @@ public class ShowRepository {
 
     private ShowDetails showDetails;
     private MutableLiveData<ShowDetails> showDetailsLiveData = new MutableLiveData<>();
+
+
+    private List<Season> seasons = new ArrayList<>();
+    private MutableLiveData<List<Season>> seasonsLiveData = new MutableLiveData<>();
+
+    private List<List<Episode>> episodes = new ArrayList<>();
+    private MutableLiveData<List<List<Episode>>> episodesLiveData = new MutableLiveData<>();
 
 
     private ShowRepository() {
@@ -189,4 +198,56 @@ public class ShowRepository {
     public LiveData<List<RecommendedShow>> getRecommendedShows() {
         return recommendedShowsLiveData;
     }
+
+    public void searchSeason(String slug_id) {
+        Call<List<Season>> call = apiService.getSeasons(slug_id);
+
+        call.enqueue(new Callback<List<Season>>() {
+            @Override
+            public void onResponse(Call<List<Season>> call, Response<List<Season>> response) {
+                assert response.body() != null;
+                episodes.clear();
+
+                seasons.clear();
+                seasons.addAll(response.body());
+                seasonsLiveData.setValue(seasons);
+            }
+
+            @Override
+            public void onFailure(Call<List<Season>> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    // assumes seasons has values
+    public void searchEpisodes(String slug_id) {
+
+        for (Season s : seasons) {
+            Call<List<Episode>> call = apiService.getEpisodes(slug_id, s.getNumber());
+
+            call.enqueue(new Callback<List<Episode>>() {
+                @Override
+                public void onResponse(Call<List<Episode>> call, Response<List<Episode>> response) {
+                    episodes.add(response.body());
+                    episodesLiveData.setValue(episodes);
+                }
+
+                @Override
+                public void onFailure(Call<List<Episode>> call, Throwable t) {
+                    t.getStackTrace();
+                }
+            });
+        }
+    }
+
+
+    public LiveData<List<Season>> getSeasons() {
+        return seasonsLiveData;
+    }
+
+    public LiveData<List<List<Episode>>> getEpisodes() {
+        return episodesLiveData;
+    }
+
 }

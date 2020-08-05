@@ -3,6 +3,9 @@ package com.huskyez.test.repo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.huskyez.test.api.OAuthService;
 import com.huskyez.test.api.OAuthServiceFactory;
 import com.huskyez.test.api.TraktApiConfiguration;
@@ -13,6 +16,8 @@ import com.huskyez.test.model.token.RefreshTokenRequestBody;
 
 import com.huskyez.test.R;
 import com.huskyez.test.model.token.RevokeAccessTokenBody;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,10 +31,16 @@ public class OAuth {
     private OAuthService oAuthService;
     private Context context;
 
+    private MutableLiveData<Boolean> tokenSaved = new MutableLiveData<>();
+
 
     public OAuth(Context context) {
         oAuthService = OAuthServiceFactory.getService();
         this.context = context;
+    }
+
+    public LiveData<Boolean> isTokenSaved() {
+        return tokenSaved;
     }
 
     private void saveAccessTokenToSharedPreferences(AccessToken accessToken) {
@@ -39,6 +50,7 @@ public class OAuth {
         editor.putString("refresh_token", accessToken.getRefreshToken());
         editor.putLong("expires_at", accessToken.getExpires());
         editor.apply();
+        tokenSaved.setValue(true);
     }
 
     private void clearSharedPreferences() {
@@ -122,7 +134,21 @@ public class OAuth {
         });
     }
 
+    public void logout() {
 
+        Call<Void> logout = oAuthService.logoutFromTrakt();
+        logout.enqueue(new Callback<Void>() {
+           @Override
+           public void onResponse(Call<Void> call, Response<Void> response) {
+
+           }
+
+           @Override
+           public void onFailure(Call<Void> call, Throwable t) {
+
+           }
+        });
+    }
 
 
 

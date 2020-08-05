@@ -7,12 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.huskyez.test.R;
 import com.huskyez.test.adapter.SectionsPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.huskyez.test.repo.ImageRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 ((SearchFragment)fragments.get(tab.getPosition())).search(searchView.getQuery().toString());
+                Log.d("TABLAYOUT", "On tab selected called" + tab.getPosition());
             }
 
             @Override
@@ -64,7 +67,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                Log.d("TABLAYOUT", "On tab reselected called");
             }
         });
 
@@ -93,15 +96,13 @@ public class SearchActivity extends AppCompatActivity {
             }
 
         });
-
-
     }
-
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
+            ImageRepository.getInstance().clearImageCache();
             finish();
             return true;
         }

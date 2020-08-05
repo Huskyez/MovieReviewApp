@@ -5,12 +5,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.huskyez.test.api.ApiService;
 import com.huskyez.test.api.ApiServiceFactory;
+import com.huskyez.test.model.common.RatedItem;
 import com.huskyez.test.model.common.WatchlistItem;
 import com.huskyez.test.model.movie.CollectionMovie;
 import com.huskyez.test.model.movie.WatchedMovie;
 import com.huskyez.test.model.show.CollectionShow;
 import com.huskyez.test.model.show.WatchedShow;
 import com.huskyez.test.model.sync.CollectionPostBody;
+import com.huskyez.test.model.sync.HistoryPostBody;
+import com.huskyez.test.model.sync.RatingPostBody;
 import com.huskyez.test.model.sync.WatchlistPostBody;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class UserListsRepository {
 
     private ApiService apiService;
     private String access_token;
+    private MutableLiveData<String> postResponse = new MutableLiveData<>();
+
 
     private List<CollectionMovie> movieCollection = new ArrayList<>();
     private MutableLiveData<List<CollectionMovie>> movieCollectionLiveData = new MutableLiveData<>();
@@ -43,6 +48,9 @@ public class UserListsRepository {
     private List<WatchedShow> watchedShows = new ArrayList<>();
     private MutableLiveData<List<WatchedShow>> watchedShowsLiveData = new MutableLiveData<>();
 
+    private List<RatedItem> ratings = new ArrayList<>();
+    private MutableLiveData<List<RatedItem>> ratingsLiveData = new MutableLiveData<>();
+
     private static UserListsRepository instance = null;
 
     public static UserListsRepository getInstance(String access_token) {
@@ -61,6 +69,10 @@ public class UserListsRepository {
         movieCollectionLiveData.setValue(movieCollection);
         showCollectionLiveData.setValue(showCollection);
         recommendationsLiveData.setValue(recommendations);
+    }
+
+    public LiveData<String> getResponse() {
+        return postResponse;
     }
 
     public void searchMovieCollection() {
@@ -123,7 +135,11 @@ public class UserListsRepository {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 searchMovieCollection();
                 searchShowCollection();
-                // TODO: tell the user if the item was succesfully added or not
+                if (response.isSuccessful()) {
+                    postResponse.setValue("Successfully added to Collection!");
+                } else {
+                    postResponse.setValue("Couldn't add to Collection!");
+                }
             }
 
             @Override
@@ -142,7 +158,11 @@ public class UserListsRepository {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 searchMovieCollection();
                 searchShowCollection();
-                // TODO: tell the user if the item was succesfully added or not
+                if (response.isSuccessful()) {
+                    postResponse.setValue("Successfully removed from Collection!");
+                } else {
+                    postResponse.setValue("Couldn't remove from Collection!");
+                }
             }
 
             @Override
@@ -185,7 +205,11 @@ public class UserListsRepository {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 searchWatchlist();
-                // TODO: tell the user if the item was succesfully added or not
+                if (response.isSuccessful()) {
+                    postResponse.setValue("Successfully added to Watchlist!");
+                } else {
+                    postResponse.setValue("Couldn't add to Watchlist!");
+                }
             }
 
             @Override
@@ -203,7 +227,11 @@ public class UserListsRepository {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 searchWatchlist();
-                // TODO: tell the user if the item was succesfully added or not
+                if (response.isSuccessful()) {
+                    postResponse.setValue("Successfully removed from Watchlist!");
+                } else {
+                    postResponse.setValue("Couldn't remove from Watchlist!");
+                }
             }
 
             @Override
@@ -290,5 +318,107 @@ public class UserListsRepository {
 
     public LiveData<List<WatchedShow>> getWatchedShows() {
         return watchedShowsLiveData;
+    }
+
+    public void addToHistory(HistoryPostBody history) {
+        Call<Void> call = apiService.addToHistory(access_token, history);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                searchWatchedMovies();
+                searchWatchedShows();
+                if (response.isSuccessful()) {
+                    postResponse.setValue("Successfully added to History!");
+                } else {
+                    postResponse.setValue("Couldn't add to History!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public void removeFromHistory(HistoryPostBody history) {
+
+        Call<Void> call = apiService.removeFromHistory(access_token, history);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                searchWatchedMovies();
+                searchWatchedShows();
+                if (response.isSuccessful()) {
+                    postResponse.setValue("Successfully removed from History!");
+                } else {
+                    postResponse.setValue("Couldn't remove from History!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public void searchRatings() {
+        Call<List<RatedItem>> call = apiService.getRatings(access_token);
+
+        call.enqueue(new Callback<List<RatedItem>>() {
+            @Override
+            public void onResponse(Call<List<RatedItem>> call, Response<List<RatedItem>> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    ratings.clear();
+                    ratings.addAll(response.body());
+                    ratingsLiveData.setValue(ratings);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RatedItem>> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public LiveData<List<RatedItem>> getRatings() {
+        return ratingsLiveData;
+    }
+
+    public void addRating(RatingPostBody ratings) {
+        Call<Void> call = apiService.addRating(access_token, ratings);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                searchRatings();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
+    }
+
+    public void removeRating(RatingPostBody ratings) {
+        Call<Void> call = apiService.removeRating(access_token, ratings);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                searchRatings();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.getStackTrace();
+            }
+        });
     }
 }
