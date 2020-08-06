@@ -61,7 +61,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_ratings"
-            app:layout_constraintBottom_toTopOf="@id/random"
+            app:layout_constraintBottom_toTopOf="@id/watched_movies"
             app:layout_constraintHeight_default="spread"
             android:id="@+id/bar_chart"
         />
@@ -71,9 +71,17 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bar_chart"
+            app:layout_constraintBottom_toTopOf="@id/watched_shows"
+            android:text="Watched Movies"
+            android:id="@+id/watched_movies"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/watched_movies"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="@string/app_name"
-            android:id="@+id/random"/>
-
+            android:text="Watched Shows"
+            android:id="@+id/watched_shows"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

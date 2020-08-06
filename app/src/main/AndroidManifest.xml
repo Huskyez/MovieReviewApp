@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.huskyez.test">
+    package="com.huskyez.movieapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,18 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.huskyez.test.views.MainActivity" />
-        <activity android:name="com.huskyez.test.views.login.LoginActivity">
+        <activity android:name="com.huskyez.movieapp.views.MainActivity" />
+        <activity android:name="com.huskyez.movieapp.views.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.huskyez.test.views.movie.MovieDetailActivity" />
-        <activity android:name="com.huskyez.test.views.show.ShowDetailActivity" />
-        <activity android:name="com.huskyez.test.views.search.SearchActivity" />
-        <activity android:name="com.huskyez.test.views.login.HandleLoginActivity">
+        <activity android:name="com.huskyez.movieapp.views.movie.MovieDetailActivity" />
+        <activity android:name="com.huskyez.movieapp.views.show.ShowDetailActivity" />
+        <activity android:name="com.huskyez.movieapp.views.search.SearchActivity" />
+        <activity android:name="com.huskyez.movieapp.views.login.HandleLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -33,7 +33,7 @@
                     android:scheme="app" />
             </intent-filter>
         </activity>
-        <activity android:name="com.huskyez.test.views.movie.TrendingMoviesActivity" />
+        <activity android:name="com.huskyez.movieapp.views.movie.TrendingMoviesActivity" />
     </application>
 
 </manifest>
