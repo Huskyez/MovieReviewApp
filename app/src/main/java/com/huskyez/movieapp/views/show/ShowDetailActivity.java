@@ -161,7 +161,10 @@ public class ShowDetailActivity extends AppCompatActivity {
         historyPosition = history.stream().map(x -> x.getShow().getIds().getSlug()).collect(Collectors.toList()).indexOf(slug_id);
 
         userListsRepository.getResponse().observe(this, response -> {
-            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+            if (response != null) {
+                Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                userListsRepository.resetResponse();
+            }
         });
 
         userListsRepository.getShowCollection().observe(this, collection -> {

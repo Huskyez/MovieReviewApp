@@ -293,7 +293,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         history = userListsRepository.getWatchedMovies().getValue();
 
         userListsRepository.getResponse().observe(this, response -> {
-            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+            if (response != null) {
+                Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                userListsRepository.resetResponse();
+            }
         });
 
         userListsRepository.getMovieCollection().observe(this, collection -> {

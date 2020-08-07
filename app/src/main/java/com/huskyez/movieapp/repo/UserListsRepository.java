@@ -481,4 +481,8 @@ public class UserListsRepository {
     public LiveData<List<Show>> getRecommendedShows() {
         return recommendedShowsLiveData;
     }
+
+    public void resetResponse() {
+        postResponse.setValue(null);
+    }
 }
